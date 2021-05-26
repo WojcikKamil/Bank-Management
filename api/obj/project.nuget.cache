@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UyXRb/P/fGGutTGZ+ABziykl5IW9RmvDISqXEQOIJftDdYCUShOyACR0W942F1Rw3QE8P4odMXAU2of1DaYnaw==",
+  "dgSpecHash": "4NM6skXPy+OmBow336hWODntsPvENtuGyp2Wvx3ieEF8edxsSlp0PbarNqtcOnY85MjsxGKONiDD5FhmDLqVmQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Z6KCZ\\Desktop\\Bank Management\\bank-management-api\\bank-management-api.csproj",
+  "projectFilePath": "C:\\Users\\Z6KCZ\\Desktop\\Bank Management\\api\\Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Z6KCZ\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.1\\microsoft.aspnetcore.authentication.jwtbearer.5.0.1.nupkg.sha512",
     "C:\\Users\\Z6KCZ\\.nuget\\packages\\microsoft.aspnetcore.authentication.openidconnect\\5.0.1\\microsoft.aspnetcore.authentication.openidconnect.5.0.1.nupkg.sha512",

@@ -592,11 +592,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Z6KCZ\\Desktop\\Bank Management\\bank-management-api\\bank-management-api.csproj",
-      "projectName": "bank-management-api",
-      "projectPath": "C:\\Users\\Z6KCZ\\Desktop\\Bank Management\\bank-management-api\\bank-management-api.csproj",
+      "projectUniqueName": "C:\\Users\\Z6KCZ\\Desktop\\Bank Management\\api\\Api.csproj",
+      "projectName": "Api",
+      "projectPath": "C:\\Users\\Z6KCZ\\Desktop\\Bank Management\\api\\Api.csproj",
       "packagesPath": "C:\\Users\\Z6KCZ\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Z6KCZ\\Desktop\\Bank Management\\bank-management-api\\obj\\",
+      "outputPath": "C:\\Users\\Z6KCZ\\Desktop\\Bank Management\\api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\"
