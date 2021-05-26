@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLogic.Services;
+using DataLayer;
+using DataLayer.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,8 +30,18 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string envConnectionString = Environment.GetEnvironmentVariable(EnvironmentVariables.DatabaseConnectionStringEnvVarName);
+            string connectionString = string.IsNullOrWhiteSpace(envConnectionString)
+                ? Configuration.GetConnectionString("BankManagement")
+                : envConnectionString;
+
+            services.AddDbContext<BmDbContext>();
 
             services.AddControllers();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
@@ -54,6 +68,15 @@ namespace Api
             {
                 endpoints.MapControllers();
             });
+
+            UpdateDatabase(app.ApplicationServices);
+        }
+
+        private static void UpdateDatabase(IServiceProvider serviceProvider)
+        {
+            using IServiceScope serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<BmDbContext>();
+            context.Database.Migrate();
         }
     }
 }
