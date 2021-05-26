@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import RoutingConfig from './app.routing';
 import AppComponent from './app.component';
 import MaterialModule from './materials.module';
+import ComponentsModule from './components/components.module';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import MaterialModule from './materials.module';
     HttpClientModule,
     ReactiveFormsModule,
     MaterialModule,
+    ComponentsModule,
   ],
   providers: [BrowserAnimationsModule],
   bootstrap: [AppComponent],
