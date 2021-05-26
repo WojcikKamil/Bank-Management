@@ -3,10 +3,10 @@ C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\bin\Debug\netcoreapp3.1\Dat
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\bin\Debug\netcoreapp3.1\DataLayer.runtimeconfig.dev.json
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\bin\Debug\netcoreapp3.1\DataLayer.dll
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\bin\Debug\netcoreapp3.1\DataLayer.pdb
-C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\obj\Debug\netcoreapp3.1\DataLayer.csprojAssemblyReference.cache
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\obj\Debug\netcoreapp3.1\DataLayer.AssemblyInfoInputs.cache
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\obj\Debug\netcoreapp3.1\DataLayer.AssemblyInfo.cs
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\obj\Debug\netcoreapp3.1\DataLayer.csproj.CoreCompileInputs.cache
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\obj\Debug\netcoreapp3.1\DataLayer.dll
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\obj\Debug\netcoreapp3.1\DataLayer.pdb
 C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\obj\Debug\netcoreapp3.1\DataLayer.genruntimeconfig.cache
+C:\Users\Z6KCZ\Desktop\Bank Management\api\DataLayer\obj\Debug\netcoreapp3.1\DataLayer.csproj.AssemblyReference.cache
