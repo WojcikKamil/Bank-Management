@@ -1,0 +1,30 @@
+<div class="form-box">
+  <div class="form-content">
+    <form [formGroup]='loginForm'>
+
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="pat@example.com" formControlName='name' required>
+            <mat-error *ngIf="nameControl?.invalid">{{nameErrorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+        
+        
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName='password' [type]="hidePassword ? 'password' : 'text'" required>
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="passwordControl?.invalid">{{passwordErrorMessage}}</mat-error>
+          </mat-form-field>
+        </div>
+        
+        
+        <button mat-raised-button (click)='login()' [disabled]='!loginForm.valid'>LOG IN</button>
+        <p class="message">Not yet registered? <a mat-button routerLink="/register">Sign up</a></p>
+      </form>
+    </div>
+  </div>
