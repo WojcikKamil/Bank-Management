@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import RoutingConfig from './app.routing';
-import { AppComponent } from './app.component';
+import AppComponent from './app.component';
 import MaterialModule from './materials.module';
 
 @NgModule({
