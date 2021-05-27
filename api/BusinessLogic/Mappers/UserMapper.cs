@@ -15,7 +15,6 @@ namespace BusinessLogic.Mappers
         {
             Id = user.Id,
             Password = user.Password.Trim(),
-            AccountId = user.AccountId,
             IsBanker = user.IsBanker,
             Login = user.Login.Trim(),
             Surname = user.Name.Trim()
@@ -26,7 +25,6 @@ namespace BusinessLogic.Mappers
             {
                 Id = user.Id,
                 Password = user.Password.Trim(),
-                AccountId = user.AccountId,
                 IsBanker = user.IsBanker,
                 Login = user.Login.Trim(),
                 Surname = user.Name.Trim()

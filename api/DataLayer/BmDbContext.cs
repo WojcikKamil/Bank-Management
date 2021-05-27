@@ -45,6 +45,12 @@ namespace DataLayer
                 entity.Property(e => e.Number)
                     .HasMaxLength(8)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Accounts)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Account__UserId__75A278F5");
             });
 
             modelBuilder.Entity<Transaction>(entity =>
@@ -66,13 +72,13 @@ namespace DataLayer
                     .WithMany(p => p.TransactionReceivers)
                     .HasForeignKey(d => d.ReceiverId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Transacti__Recei__6754599E");
+                    .HasConstraintName("FK__Transacti__Recei__797309D9");
 
                 entity.HasOne(d => d.Sender)
                     .WithMany(p => p.TransactionSenders)
                     .HasForeignKey(d => d.SenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Transacti__Sende__66603565");
+                    .HasConstraintName("FK__Transacti__Sende__787EE5A0");
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -102,12 +108,6 @@ namespace DataLayer
                     .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false);
-
-                entity.HasOne(d => d.Account)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.AccountId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__User__AccountId__6383C8BA");
             });
 
             OnModelCreatingPartial(modelBuilder);

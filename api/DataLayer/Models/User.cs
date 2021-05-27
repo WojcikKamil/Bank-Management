@@ -7,6 +7,11 @@ namespace DataLayer.Models
 {
     public partial class User
     {
+        public User()
+        {
+            Accounts = new HashSet<Account>();
+        }
+
         public int Id { get; set; }
         public string Login { get; set; }
         public string Name { get; set; }
@@ -15,6 +20,6 @@ namespace DataLayer.Models
         public string Password { get; set; }
         public int AccountId { get; set; }
 
-        public virtual Account Account { get; set; }
+        public virtual ICollection<Account> Accounts { get; set; }
     }
 }
