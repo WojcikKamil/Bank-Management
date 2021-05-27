@@ -34,6 +34,7 @@ namespace Api
             string connectionString = string.IsNullOrWhiteSpace(envConnectionString)
                 ? Configuration.GetConnectionString("BankManagement")
                 : envConnectionString;
+            services.AddCors();
 
             services.AddDbContext<BmDbContext>();
 
@@ -41,6 +42,7 @@ namespace Api
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
 
             services.AddSwaggerGen(c =>
             {
@@ -57,6 +59,11 @@ namespace Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1"));
             }
+
+            app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 

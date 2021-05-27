@@ -31,7 +31,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserResponse>> GetUserByName(int id)
+        public async Task<ActionResult<UserResponse>> GetUserByIdAsync(int id)
         {
             var result = await _userService.GetByIdAsync(id);
 
@@ -50,7 +50,7 @@ namespace Api.Controllers
                 : Ok(result.Value);
         }
 
-        [HttpGet("login")]
+        [HttpPost("login")]
         public async Task<ActionResult> LogIn([FromBody] LoginUserRequest request)
         {
             var result = await _userService.GetUserByCredentials(request);
