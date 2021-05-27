@@ -51,7 +51,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("login")]
-        public async Task<ActionResult> LogIn([FromQuery] LoginUserRequest request)
+        public async Task<ActionResult> LogIn([FromBody] LoginUserRequest request)
         {
             var result = await _userService.GetUserByCredentials(request);
 

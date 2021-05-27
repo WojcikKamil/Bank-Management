@@ -51,46 +51,48 @@ namespace BusinessLogic.Services
                 : new Result<UserResponse, UserError>(UserError.UserNotFound);
         }
 
-        public async Task<Result<UserResponse, UserError>> RegisterUser(RegisterUserRequest request)
+        public async Task<Result<RegisterResponse, UserError>> RegisterUser(RegisterUserRequest request)
         {
             if(string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Surname))
-                return new Result<UserResponse, UserError>(UserError.InvalidInput);
+                return new Result<RegisterResponse, UserError>(UserError.InvalidInput);
 
             string loginString = "";
             string accountString = "";
-            bool isLoginAvailable = false;
+            bool isLoginUse = true;
 
             do
             {
                 int loginInt = new Random().Next(10000000,99999999);
                 loginString = loginInt.ToString();
-                isLoginAvailable = (await _userRepository.GetUsersAsync()).Any(u => u.Login == loginString);
+                isLoginUse = (await _userRepository.GetUsersAsync()).Any(u => u.Login == loginString);
             }
-            while (isLoginAvailable != true);
+            while (isLoginUse == true);
 
-            do
+            User registeredUserModel = _userRepository.Create(new User
             {
-                int loginInt = new Random().Next(10000000, 99999999);
-                accountString = loginInt.ToString();
-                isLoginAvailable = (await _accountRepository.GetAccountsAsync()).Any(u => u.Number == loginString);
-            }
-            while (isLoginAvailable != true);
-
-            Account assignedAccount = _accountRepository.Create(new Account
-            {
-                Number = accountString,
-                Balance = 0,               
-            });
-
-            User registeredUserModel = _userRepository.Create(new User { 
-                Name = request.Name, 
+                Name = request.Name,
                 Surname = request.Surname,
                 Login = loginString,
                 Password = request.Password,
                 IsBanker = request.isBanker,
             });
 
-            return UserMapper.FromModelToResult(registeredUserModel);
+            do
+            {
+                int accountInt = new Random().Next(10000000, 99999999);
+                accountString = accountInt.ToString();
+                isLoginUse = (await _accountRepository.GetAccountsAsync()).Any(u => u.Number == accountString);
+            }
+            while (isLoginUse != true);
+
+            Account assignedAccount = _accountRepository.Create(new Account
+            {
+                Number = accountString,
+                Balance = 0,               
+                UserId = registeredUserModel.Id
+            });
+
+            return UserMapper.FromModelToRegisterResult(registeredUserModel, assignedAccount.Id);
         }
     }
 }
