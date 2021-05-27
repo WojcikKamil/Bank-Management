@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(BmDbContext))]
-    [Migration("20210527183925_full-database-snapshot-3")]
-    partial class fulldatabasesnapshot3
+    [Migration("20210527191251_full-database-snapshot-1")]
+    partial class fulldatabasesnapshot1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,7 +25,9 @@ namespace DataLayer.Migrations
             modelBuilder.Entity("DataLayer.Models.Account", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal?>("Balance")
                         .HasColumnType("decimal(18,2)");
@@ -40,7 +42,7 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Account_UserId");
 
                     b.ToTable("Account");
                 });
@@ -48,7 +50,9 @@ namespace DataLayer.Migrations
             modelBuilder.Entity("DataLayer.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ReceiverId")
                         .HasColumnType("int");
@@ -70,9 +74,9 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex(new[] { "ReceiverId" }, "IX_Transaction_ReceiverId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex(new[] { "SenderId" }, "IX_Transaction_SenderId");
 
                     b.ToTable("Transaction");
                 });
@@ -80,38 +84,47 @@ namespace DataLayer.Migrations
             modelBuilder.Entity("DataLayer.Models.User", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("IsBanker")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasColumnName("isBanker");
+                        .HasColumnName("isBanker")
+                        .HasDefaultValueSql("(CONVERT([bit],(0)))");
 
                     b.Property<string>("Login")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasDefaultValueSql("('')");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasDefaultValueSql("('')");
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasDefaultValueSql("('')");
 
                     b.Property<string>("Surname")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasDefaultValueSql("('')");
 
                     b.HasKey("Id");
 

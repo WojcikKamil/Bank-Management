@@ -24,6 +24,7 @@ namespace DataLayer.Repositories
         {
             return await _context
                 .Accounts
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
@@ -32,6 +33,7 @@ namespace DataLayer.Repositories
 
             return await _context
                 .Accounts
+                .AsNoTracking()
                 .ToListAsync();
         }
 

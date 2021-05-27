@@ -38,7 +38,9 @@ namespace DataLayer
             {
                 entity.ToTable("Account");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasIndex(e => e.UserId, "IX_Account_UserId");
+
+                entity.Property(e => e.Id);
 
                 entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)");
 
@@ -57,7 +59,11 @@ namespace DataLayer
             {
                 entity.ToTable("Transaction");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasIndex(e => e.ReceiverId, "IX_Transaction_ReceiverId");
+
+                entity.HasIndex(e => e.SenderId, "IX_Transaction_SenderId");
+
+                entity.Property(e => e.Id);
 
                 entity.Property(e => e.Timestamp).HasColumnType("smalldatetime");
 
@@ -85,29 +91,36 @@ namespace DataLayer
             {
                 entity.ToTable("User");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id);
 
-                entity.Property(e => e.IsBanker).HasColumnName("isBanker");
+                entity.Property(e => e.IsBanker)
+                    .IsRequired()
+                    .HasColumnName("isBanker")
+                    .HasDefaultValueSql("(CONVERT([bit],(0)))");
 
                 entity.Property(e => e.Login)
                     .IsRequired()
                     .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
 
                 entity.Property(e => e.Surname)
                     .IsRequired()
                     .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('')");
             });
 
             OnModelCreatingPartial(modelBuilder);

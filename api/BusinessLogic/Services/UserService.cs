@@ -83,7 +83,7 @@ namespace BusinessLogic.Services
                 accountString = accountInt.ToString();
                 isLoginUse = (await _accountRepository.GetAccountsAsync()).Any(u => u.Number == accountString);
             }
-            while (isLoginUse != true);
+            while (isLoginUse == true);
 
             Account assignedAccount = _accountRepository.Create(new Account
             {
