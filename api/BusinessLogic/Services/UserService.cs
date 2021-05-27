@@ -57,16 +57,22 @@ namespace BusinessLogic.Services
                 return new Result<RegisterResponse, UserError>(UserError.InvalidInput);
 
             string loginString = "";
-            string accountString = "";
-            bool isLoginUse = true;
+            bool isLoginUsed = true;
 
-            do
+            if (!request.isBanker)
             {
-                int loginInt = new Random().Next(10000000,99999999);
-                loginString = loginInt.ToString();
-                isLoginUse = (await _userRepository.GetUsersAsync()).Any(u => u.Login == loginString);
+                do
+                {
+                    int loginInt = new Random().Next(10000000, 99999999);
+                    loginString = loginInt.ToString();
+                    isLoginUsed = (await _userRepository.GetUsersAsync()).Any(u => u.Login == loginString);
+                }
+                while (isLoginUsed == true) ;
+            } else
+            {
+                loginString = request.Name.Substring(0, 1).ToLower() + request.Surname.ToLower();
             }
-            while (isLoginUse == true);
+            
 
             User registeredUserModel = _userRepository.Create(new User
             {
@@ -77,13 +83,15 @@ namespace BusinessLogic.Services
                 IsBanker = request.isBanker,
             });
 
+
+            string accountString = "";
             do
             {
                 int accountInt = new Random().Next(10000000, 99999999);
                 accountString = accountInt.ToString();
-                isLoginUse = (await _accountRepository.GetAccountsAsync()).Any(u => u.Number == accountString);
+                isLoginUsed = (await _accountRepository.GetAccountsAsync()).Any(u => u.Number == accountString);
             }
-            while (isLoginUse == true);
+            while (isLoginUsed == true);
 
             Account assignedAccount = _accountRepository.Create(new Account
             {
@@ -92,7 +100,7 @@ namespace BusinessLogic.Services
                 UserId = registeredUserModel.Id
             });
 
-            return UserMapper.FromModelToRegisterResult(registeredUserModel, assignedAccount.Id);
+            return UserMapper.FromModelToRegisterResult(registeredUserModel, assignedAccount.Number);
         }
     }
 }

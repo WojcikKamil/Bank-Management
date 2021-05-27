@@ -50,7 +50,7 @@ namespace Api.Controllers
                 : Ok(result.Value);
         }
 
-        [HttpGet("login")]
+        [HttpPost("login")]
         public async Task<ActionResult> LogIn([FromBody] LoginUserRequest request)
         {
             var result = await _userService.GetUserByCredentials(request);

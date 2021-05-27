@@ -9,9 +9,7 @@ import environment from '../../environments/environment';
 export default abstract class ApiService {
   protected abstract root: string;
 
-  private headers: {
-      'Content-Type': 'application/json';
-  } | undefined;
+  private headers!: {'Content-Type': 'application/json'};
 
   protected constructor(protected http: HttpClient) { }
 

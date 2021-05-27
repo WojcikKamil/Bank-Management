@@ -22,6 +22,6 @@ namespace BusinessLogic.Responses
         public string Surname { get; set; }
         public bool IsBanker { get; set; }
         public string Password { get; set; }
-        public int AccountId { get; set; }
+        public string AccountNumber { get; set; }
     }
 }

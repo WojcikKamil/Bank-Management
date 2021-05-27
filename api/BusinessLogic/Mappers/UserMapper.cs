@@ -32,7 +32,7 @@ namespace BusinessLogic.Mappers
                 Surname = user.Name.Trim()
             };
 
-        public static Result<RegisterResponse, UserError> FromModelToRegisterResult(User user, int accountId)
+        public static Result<RegisterResponse, UserError> FromModelToRegisterResult(User user, string accountNumber)
             => new Result<RegisterResponse, UserError>(new RegisterResponse
             {
                 Id = user.Id,
@@ -41,7 +41,7 @@ namespace BusinessLogic.Mappers
                 Login = user.Login.Trim(),
                 Name = user.Name.Trim(),
                 Surname = user.Name.Trim(),
-                AccountId = accountId
+                AccountNumber = accountNumber
             });
     }
 }
