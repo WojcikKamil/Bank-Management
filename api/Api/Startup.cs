@@ -41,6 +41,7 @@ namespace Api
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
 
             services.AddSwaggerGen(c =>
             {

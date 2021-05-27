@@ -11,6 +11,12 @@ namespace BusinessLogic.Requests.User
         public string Name { get; set; }
 
         [Required]
+        public string Surname { get; set; }
+
+        [Required]
         public string Password { get; set; }
+
+        [Required]
+        public bool isBanker { get; set; }
     }
 }

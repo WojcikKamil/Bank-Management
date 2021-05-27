@@ -15,16 +15,18 @@ namespace BusinessLogic.Services
 {
     public class UserService : IUserService 
     {
-        private readonly IUserRepository _repository;
+        private readonly IUserRepository _userRepository;
+        private readonly IAccountRepository _accountRepository;
 
-        public UserService(IUserRepository repository)
+        public UserService(IUserRepository userRepository, IAccountRepository accountRepository)
         {
-            _repository = repository;
+            _userRepository = userRepository;
+            _accountRepository = accountRepository;
         }
 
         public async Task<Result<UserResponse, UserError>> GetByIdAsync(int id)
         {
-            User user = await _repository.GetByIdAsync(id);
+            User user = await _userRepository.GetByIdAsync(id);
 
             return user != null
                 ? UserMapper.FromModelToResult(user)
@@ -33,7 +35,7 @@ namespace BusinessLogic.Services
 
         public async Task<Result<IReadOnlyCollection<UserResponse>, UserError>> GetUsersAsync()
         {
-            List<User> usersListModel = await _repository.GetUsersAsync();
+            List<User> usersListModel = await _userRepository.GetUsersAsync();
             List<UserResponse> usersListResponse = usersListModel.Select(u => UserMapper.FromModelToResponse(u)).ToList();
 
             return new Result<IReadOnlyCollection<UserResponse>, UserError>(usersListResponse);
@@ -41,8 +43,8 @@ namespace BusinessLogic.Services
 
         public async Task<Result<UserResponse, UserError>> GetUserByCredentials(LoginUserRequest request)
         {
-            List<User> usersListModel = await _repository.GetUsersAsync();
-            User requestedUserModel = usersListModel.FirstOrDefault(u => u.Name == request.Name && u.Password == request.Password);
+            List<User> usersListModel = await _userRepository.GetUsersAsync();
+            User requestedUserModel = usersListModel.FirstOrDefault(u => u.Login == request.Login && u.Password == request.Password);
 
             return requestedUserModel != null
                 ? UserMapper.FromModelToResult(requestedUserModel)
@@ -51,16 +53,42 @@ namespace BusinessLogic.Services
 
         public async Task<Result<UserResponse, UserError>> RegisterUser(RegisterUserRequest request)
         {
-            if(string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Password))
+            if(string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Surname))
                 return new Result<UserResponse, UserError>(UserError.InvalidInput);
-            
 
-            List<User> userListModel = await _repository.GetUsersAsync();
-            
-            if (userListModel.Any(u => u.Name == request.Name))
-                return new Result<UserResponse, UserError>(UserError.UserAlreadyExists);
+            string loginString = "";
+            string accountString = "";
+            bool isLoginAvailable = false;
 
-            User registeredUserModel = _repository.Create(new User { Name = request.Name, Password = request.Password });
+            do
+            {
+                int loginInt = new Random().Next(10000000,99999999);
+                loginString = loginInt.ToString();
+                isLoginAvailable = (await _userRepository.GetUsersAsync()).Any(u => u.Login == loginString);
+            }
+            while (isLoginAvailable != true);
+
+            do
+            {
+                int loginInt = new Random().Next(10000000, 99999999);
+                accountString = loginInt.ToString();
+                isLoginAvailable = (await _accountRepository.GetAccountsAsync()).Any(u => u.Number == loginString);
+            }
+            while (isLoginAvailable != true);
+
+            Account assignedAccount = _accountRepository.Create(new Account
+            {
+                Number = accountString,
+                Balance = 0,               
+            });
+
+            User registeredUserModel = _userRepository.Create(new User { 
+                Name = request.Name, 
+                Surname = request.Surname,
+                Login = loginString,
+                Password = request.Password,
+                IsBanker = request.isBanker,
+            });
 
             return UserMapper.FromModelToResult(registeredUserModel);
         }

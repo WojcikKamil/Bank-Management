@@ -14,16 +14,22 @@ namespace BusinessLogic.Mappers
             => new Result<UserResponse, UserError>(new UserResponse
         {
             Id = user.Id,
-            Name = user.Name.Trim(),
             Password = user.Password.Trim(),
+            AccountId = user.AccountId,
+            IsBanker = user.IsBanker,
+            Login = user.Login.Trim(),
+            Surname = user.Name.Trim()
         });
 
         public static UserResponse FromModelToResponse(User user)
             => new UserResponse
             {
                 Id = user.Id,
-                Name = user.Name.Trim(),
                 Password = user.Password.Trim(),
+                AccountId = user.AccountId,
+                IsBanker = user.IsBanker,
+                Login = user.Login.Trim(),
+                Surname = user.Name.Trim()
             };
     }
 }
