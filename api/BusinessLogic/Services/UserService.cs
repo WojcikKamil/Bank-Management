@@ -51,10 +51,10 @@ namespace BusinessLogic.Services
                 : new Result<UserResponse, UserError>(UserError.UserNotFound);
         }
 
-        public async Task<Result<RegisterResponse, UserError>> RegisterUser(RegisterUserRequest request)
+        public async Task<Result<UserResponse, UserError>> RegisterUser(RegisterUserRequest request)
         {
             if(string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Surname))
-                return new Result<RegisterResponse, UserError>(UserError.InvalidInput);
+                return new Result<UserResponse, UserError>(UserError.InvalidInput);
 
             string loginString = "";
             bool isLoginUsed = true;
@@ -100,7 +100,7 @@ namespace BusinessLogic.Services
                 UserId = registeredUserModel.Id
             });
 
-            return UserMapper.FromModelToRegisterResult(registeredUserModel, assignedAccount.Number);
+            return UserMapper.FromModelToResult(registeredUserModel);
         }
     }
 }

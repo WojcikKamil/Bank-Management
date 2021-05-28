@@ -31,17 +31,5 @@ namespace BusinessLogic.Mappers
                 Name = user.Name.Trim(),
                 Surname = user.Name.Trim()
             };
-
-        public static Result<RegisterResponse, UserError> FromModelToRegisterResult(User user, string accountNumber)
-            => new Result<RegisterResponse, UserError>(new RegisterResponse
-            {
-                Id = user.Id,
-                Password = user.Password.Trim(),
-                IsBanker = user.IsBanker,
-                Login = user.Login.Trim(),
-                Name = user.Name.Trim(),
-                Surname = user.Name.Trim(),
-                AccountNumber = accountNumber
-            });
     }
 }
