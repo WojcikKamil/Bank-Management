@@ -5,7 +5,15 @@
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Name</mat-label>
-          <input matInput placeholder="name" formControlName='name' required>
+          <input matInput placeholder="Name" formControlName='name' required>
+          <mat-error *ngIf="nameControl!.invalid">{{nameErrorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Surname</mat-label>
+          <input matInput placeholder="Surname" formControlName='surname' required>
           <mat-error *ngIf="nameControl!.invalid">{{nameErrorMessage}}</mat-error>
         </mat-form-field>
       </div>
@@ -31,6 +39,9 @@
         </mat-form-field>
       </div>
 
+      <div>
+        <p><mat-checkbox formControlName="isBanker">Banker</mat-checkbox></p>
+      </div>
 
       <button mat-raised-button (click)='initializeRegisterRequest()' [disabled]='!registerForm.valid'>CREATE</button>
       <p class="message">Already registered? <a mat-button routerLink="/login">Sign In</a></p>

@@ -1,13 +1,22 @@
 export default class User {
-    id!: number;
+  constructor(
+    id: number,
+    login: string,
+    name: string,
+    surname: string,
+    isBanker: boolean,
+    password: string,
+  ) {}
 
-    login!: string;
+  id!: number;
 
-    name!: string;
+  login!: string;
 
-    surname!: string;
+  name!: string;
 
-    isBanker!: true;
+  surname!: string;
 
-    password!: string;
+  isBanker!: boolean;
+
+  password!: string;
 }

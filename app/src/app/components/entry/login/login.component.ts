@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import SessionStorage from 'src/app/helpers/session-storage';
+import User from 'src/app/models/user';
 import UserService from 'src/app/services/user.service';
 import MessageDialog from '../../dialogs/message.dialog';
 
@@ -20,34 +22,36 @@ export default class LoginComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private dialog: MatDialog,
+    private session: SessionStorage,
   ) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(63)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(63)]],
+      login: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(63)]],
     });
+    this.session.logOutCurrentUser();
   }
 
-  get nameControl() {
-    return this.loginForm.get('name');
+  get loginControl() {
+    return this.loginForm.get('login');
   }
 
   get passwordControl() {
     return this.loginForm.get('password');
   }
 
-  get nameErrorMessage() {
-    if (this.nameControl?.hasError('required')) {
-      return 'Name is required';
+  get loginErrorMessage() {
+    if (this.loginControl?.hasError('required')) {
+      return 'Login is required';
     }
 
-    if (this.nameControl?.hasError('minlength')) {
-      return 'Reminder: minimum lenght is 8';
+    if (this.loginControl?.hasError('minlength')) {
+      return 'Login may only have 8 characters';
     }
 
-    if (this.nameControl?.hasError('maxlength')) {
-      return 'Reminder: maximum lenght is 63';
+    if (this.loginControl?.hasError('maxlength')) {
+      return 'Login may only have 8 characters';
     }
 
     return '';
@@ -59,16 +63,32 @@ export default class LoginComponent implements OnInit {
     }
 
     if (this.passwordControl?.hasError('minlength')) {
-      return 'Reminder: minimum lenght is 8';
+      return 'Reminder: minimum lenght is 4';
     }
 
     if (this.passwordControl?.hasError('maxlength')) {
-      return 'Reminder: maximum lenght is 63';
+      return 'Reminder: maximum lenght is 100';
     }
 
     return '';
   }
 
-  login() {
+  async login() {
+    const loginVal = this.loginControl?.value;
+    const passwordVal = this.passwordControl?.value;
+
+    await this.userService
+      .attemptLogin({ login: loginVal, password: passwordVal })
+      .subscribe((response) => {
+        this.session.setCurrentUser(response);
+        this.router.navigateByUrl('/home');
+      }, (error) => {
+        this.dialog.open(MessageDialog, {
+          data: {
+            title: 'Login failed',
+            message: error.error,
+          },
+        });
+      });
   }
 }

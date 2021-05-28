@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import RtValidators from 'src/app/helpers/validation';
 import UserService from 'src/app/services/user.service';
 import MessageDialog from '../../dialogs/message.dialog';
-import RtValidators from '../../helpers/validation';
 
 @Component({
   selector: 'app-register',
@@ -23,9 +23,11 @@ export default class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(63)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100), RegisterComponent.checkPasswordRequirements]],
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      surname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100), RegisterComponent.checkPasswordRequirements]],
       passwordConfirm: ['', Validators.required],
+      isBanker: [false, Validators.required],
     }, {
       validators: [RegisterComponent.checkPasswordsMatching],
     });
@@ -37,6 +39,10 @@ export default class RegisterComponent implements OnInit {
     return this.registerForm.get('name');
   }
 
+  get surnameControl() {
+    return this.registerForm.get('surname');
+  }
+
   get passwordControl() {
     return this.registerForm.get('password');
   }
@@ -45,17 +51,37 @@ export default class RegisterComponent implements OnInit {
     return this.registerForm.get('passwordConfirm');
   }
 
+  get isBankerControl() {
+    return this.registerForm.get('isBanker');
+  }
+
   get nameErrorMessage() {
-    if (this.nameControl?.hasError('required')) {
-      return 'name is required';
+    if (this.nameControl!.hasError('required')) {
+      return 'Name is required';
     }
 
-    if (this.nameControl?.hasError('name')) {
-      return 'Please enter a valid name address';
+    if (this.nameControl!.hasError('minlength')) {
+      return 'Minimum length of a name is 2';
     }
 
-    if (this.nameControl?.hasError('notFromKmd')) {
-      return 'name must be from kmd domain';
+    if (this.nameControl!.hasError('maxlength')) {
+      return 'Maximum length of a name is 100';
+    }
+
+    return '';
+  }
+
+  get surnameErrorMessage() {
+    if (this.surnameControl!.hasError('required')) {
+      return 'Surname is required';
+    }
+
+    if (this.surnameControl!.hasError('minlength')) {
+      return 'Minimum length of a surname is 2';
+    }
+
+    if (this.surnameControl!.hasError('maxlength')) {
+      return 'Maximum length of a surname is 100';
     }
 
     return '';
@@ -67,11 +93,11 @@ export default class RegisterComponent implements OnInit {
     }
 
     if (this.passwordControl!.hasError('minlength')) {
-      return 'Minimum lenght of a password is 8';
+      return 'Minimum length of a password is 4';
     }
 
     if (this.passwordControl!.hasError('maxlength')) {
-      return 'Maximum lenght of a password is 100';
+      return 'Maximum length of a password is 100';
     }
 
     if (this.passwordControl!.hasError('noLowerCase')) {
@@ -130,6 +156,30 @@ export default class RegisterComponent implements OnInit {
     return null;
   }
 
-  initializeRegisterRequest(): any {
+  async initializeRegisterRequest() {
+    const registerForm = {
+      name: this.nameControl?.value,
+      surname: this.surnameControl?.value,
+      password: this.passwordControl?.value,
+      isBanker: this.isBankerControl?.value,
+    };
+    await this.userService
+      .attemptRegister(registerForm)
+      .subscribe((response) => {
+        this.dialog.open(MessageDialog, {
+          data: {
+            title: 'Congratulation!',
+            message: `Welcome, ${response.name}. You may now log in using your login: <b>${response.login}</b>`,
+          },
+        });
+        this.router.navigateByUrl('/login');
+      }, (error) => {
+        this.dialog.open(MessageDialog, {
+          data: {
+            title: 'Error',
+            message: error.error,
+          },
+        });
+      });
   }
 }
