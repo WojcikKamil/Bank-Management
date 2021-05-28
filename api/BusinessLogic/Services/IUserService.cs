@@ -12,6 +12,6 @@ namespace BusinessLogic.Services
         Task<Result<UserResponse, UserError>> GetByIdAsync(int id);
         Task<Result<UserResponse, UserError>> GetUserByCredentials(LoginUserRequest request);
         Task<Result<IReadOnlyCollection<UserResponse>, UserError>> GetUsersAsync();
-        Task<Result<RegisterResponse, UserError>> RegisterUser(RegisterUserRequest request);
+        Task<Result<UserResponse, UserError>> RegisterUser(RegisterUserRequest request);
     }
 }
