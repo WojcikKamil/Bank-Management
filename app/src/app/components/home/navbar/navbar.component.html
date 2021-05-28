@@ -1,0 +1,16 @@
+<mat-toolbar color='primary'>
+    <mat-icon>account_balance</mat-icon>
+    <span>Bank Management</span>
+
+    <span class="example-spacer"></span>
+
+    <div *ngIf='isLoggedIn'>
+      <button mat-stroked-button class="button-user" (click)='openSettingsDialog()'>
+          <mat-icon>perm_identity</mat-icon>
+          {{user.name}} {{user.surname}} 
+          <mat-icon *ngIf='user.isBanker' class="icon-verified">verified</mat-icon>
+        </button>
+    </div>
+  </mat-toolbar>
+
+<router-outlet></router-outlet>

@@ -18,7 +18,7 @@ namespace BusinessLogic.Mappers
                 IsBanker = user.IsBanker,
                 Login = user.Login.Trim(),
                 Name = user.Name.Trim(),
-                Surname = user.Name.Trim()
+                Surname = user.Surname.Trim()
             });
 
         public static UserResponse FromModelToResponse(User user)
@@ -29,7 +29,7 @@ namespace BusinessLogic.Mappers
                 IsBanker = user.IsBanker,
                 Login = user.Login.Trim(),
                 Name = user.Name.Trim(),
-                Surname = user.Name.Trim()
+                Surname = user.Surname.Trim()
             };
     }
 }
