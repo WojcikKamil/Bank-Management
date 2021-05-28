@@ -1,6 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
+@font-face {
+  font-family: 'Roboto';
+  src: url('assets/latin-300.woff2') format('woff2');
+}
+
 :root{
   --primary-background: #2141d1;
   --primary-background-gradient: #4466ad;

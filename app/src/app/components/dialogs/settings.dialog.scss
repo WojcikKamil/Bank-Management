@@ -1,13 +1,39 @@
+.dialog-global {
+    width: 200px;
+}
+
+.profile {
+    margin-bottom: 20px;
+    position: relative;
+    bottom: 20px;
+}
+
 .icon-identity {
-    font-size: 40px;
+    position: relative;
+    right: 17px;
+    font-size: 70px;
 }
 
 .icon-verified {
     position: relative;
     color: var(--primary-font);
+    bottom: 40px;
+    left: 10px;
 }
 
-.div-center-content {
-    display: flex;
-    align-items: center;
+.div-icons {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    top: 20px;
+}
+
+.item-center {
+    text-align: center;
+}
+
+.item-relative {
+    margin-bottom: 10px;
+    position: relative;
+    width: 100%;
 }

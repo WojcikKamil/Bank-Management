@@ -24,6 +24,6 @@ export default class NavbarComponent {
   }
 
   openSettingsDialog(): void {
-    this.dialog.open(SettingsDialog, { data: this.user });
+    this.dialog.open(SettingsDialog);
   }
 }
