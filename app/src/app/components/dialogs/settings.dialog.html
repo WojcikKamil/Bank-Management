@@ -1,0 +1,23 @@
+<div class='dialog-global'>
+    
+    <div class="profile">
+        <div class="div-icons">
+            <mat-icon class="icon-identity">perm_identity</mat-icon>
+            <mat-icon *ngIf='user.isBanker' class="icon-verified">verified</mat-icon>
+        </div>
+        <p class="relative item-center"><b>{{user.name}} {{user.surname}}</b></p>
+    </div>
+
+    <div>
+        <button mat-raised-button color="primary" class="item-relative">Personal settings</button>
+    </div>
+
+    <div>
+        <button mat-raised-button color="primary" class="item-relative">Account settings</button>
+    </div>
+
+    <div>
+        <button mat-raised-button mat-dialog-close color="primary" class="item-relative" (click)='logOut()'>Log Out</button>
+    </div>
+    
+</div>

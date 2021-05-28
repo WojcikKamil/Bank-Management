@@ -1,13 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
+@font-face {
+  font-family: 'Roboto';
+  src: url('assets/latin-300.woff2') format('woff2');
+}
+
 :root{
-  --primary-background: #76b852;
-  --primary-background-gradient: #8DC26F;
-  --primary-button: #4CAF50;
-  --primary-button-hover: #43A047;
+  --primary-background: #2141d1;
+  --primary-background-gradient: #4466ad;
+  --primary-button: #2d1adb;
+  --primary-button-hover: #40417c;
   --primary-button-font: #FFFFFF;
-  --primary-font: #32A53A;
+  --primary-font: #2108ff;
   --greyed-out-font: #ACB0AD;
 }
 
