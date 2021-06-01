@@ -1,8 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import SessionStorage from 'src/app/helpers/session-storage';
 import User from 'src/app/models/user';
+import PersonalSettingsDialog from './personal/personal-settings.dialog';
 
 @Component({
   selector: 'settings-dialog',
@@ -10,10 +11,18 @@ import User from 'src/app/models/user';
   styleUrls: ['settings.dialog.scss'],
 })
 export default class SettingsDialog {
-  constructor(private session: SessionStorage, private router: Router) {}
+  constructor(
+    private session: SessionStorage,
+    private router: Router,
+    private dialog: MatDialog,
+  ) {}
 
   get user(): User {
     return this.session.getCurrentUser();
+  }
+
+  goToPersonalSettings(): void {
+    this.dialog.open(PersonalSettingsDialog, { data: this.user });
   }
 
   logOut(): void {
