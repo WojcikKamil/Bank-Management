@@ -1,0 +1,46 @@
+<div class="div-form">
+    <form [formGroup]='personalForm'>
+
+        <div class="form-item">
+            <mat-form-field class="max-length">
+                <mat-label>{{data.login}}</mat-label>
+                <span matPrefix>Login: &nbsp;</span>
+                <input matInput placeholder='Login' formControlName='login'>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='loginControl!.disabled' (click)='edit(loginControl)'><mat-icon>edit</mat-icon></button>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='!(loginControl!.disabled)' (click)='confirm(loginControl)'><mat-icon>done</mat-icon></button>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='!(loginControl!.disabled)' (click)='cancel(loginControl)'><mat-icon>cancel</mat-icon></button>
+                <mat-error *ngIf="loginControl!.invalid">{{getErrorMessage(loginControl)}}</mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="form-item">
+            <mat-form-field class="max-length">
+                <mat-label>{{data.name}}</mat-label>
+                <span matPrefix>Name: &nbsp;</span>
+                <input matInput placeholder='Name' formControlName='name'>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='nameControl!.disabled' (click)='edit(nameControl)'><mat-icon>edit</mat-icon></button>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='!(nameControl!.disabled)' (click)='confirm(nameControl)'><mat-icon>done</mat-icon></button>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='!(nameControl!.disabled)' (click)='cancel(nameControl)'><mat-icon>cancel</mat-icon></button>
+                <mat-error *ngIf="nameControl!.invalid">{{getErrorMessage(nameControl)}}</mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="form-item">
+            <mat-form-field class="max-length">
+                <mat-label>{{data.surname}}</mat-label>
+                <span matPrefix>Surname: &nbsp;</span>
+                <input matInput placeholder='Surname' formControlName='surname'>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='surnameControl!.disabled' (click)='edit(surnameControl)'><mat-icon>edit</mat-icon></button>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='!(surnameControl!.disabled)' (click)='confirm(surnameControl)'><mat-icon>done</mat-icon></button>
+                <button matSuffix mat-mini-fab color="primary" *ngIf='!(surnameControl!.disabled)' (click)='cancel(surnameControl)'><mat-icon>cancel</mat-icon></button>
+                <mat-error *ngIf="surnameControl!.invalid">{{getErrorMessage(surnameControl)}}</mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="form-item">
+            <button mat-raised-button color='primary'>Change password</button>
+            <button mat-raised-button mat-dialog-close color='primary' class="float-right" (click)='back()'>Back</button>
+        </div>
+
+    </form>
+</div>
