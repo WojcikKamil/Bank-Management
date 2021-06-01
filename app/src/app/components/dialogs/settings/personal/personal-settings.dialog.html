@@ -10,7 +10,7 @@
                         <span matPrefix>Login: &nbsp;</span>
                         <input matInput placeholder='Login' formControlName='login'>
                         <button matSuffix mat-mini-fab color="primary" *ngIf='loginControl!.disabled' (click)='edit(loginControl)'><mat-icon>edit</mat-icon></button>
-                        <button matSuffix mat-mini-fab color="primary" *ngIf='!(loginControl!.disabled)' (click)='confirm(loginControl)'><mat-icon>done</mat-icon></button>
+                        <button matSuffix mat-mini-fab color="primary" *ngIf='!(loginControl!.disabled) && loginControl!.valid && loginControl!.value != ""' (click)='confirm(loginControl)'><mat-icon>done</mat-icon></button>
                         <button matSuffix mat-mini-fab color="primary" *ngIf='!(loginControl!.disabled)' (click)='cancel(loginControl)'><mat-icon>cancel</mat-icon></button>
                         <mat-error *ngIf="loginControl!.invalid">{{getErrorMessage(loginControl)}}</mat-error>
                     </mat-form-field>
@@ -22,7 +22,7 @@
                         <span matPrefix>Name: &nbsp;</span>
                         <input matInput placeholder='Name' formControlName='name'>
                         <button matSuffix mat-mini-fab color="primary" *ngIf='nameControl!.disabled' (click)='edit(nameControl)'><mat-icon>edit</mat-icon></button>
-                        <button matSuffix mat-mini-fab color="primary" *ngIf='!(nameControl!.disabled)' (click)='confirm(nameControl)'><mat-icon>done</mat-icon></button>
+                        <button matSuffix mat-mini-fab color="primary" *ngIf='!(nameControl!.disabled) && nameControl!.valid && nameControl!.value != ""' (click)='confirm(nameControl)'><mat-icon>done</mat-icon></button>
                         <button matSuffix mat-mini-fab color="primary" *ngIf='!(nameControl!.disabled)' (click)='cancel(nameControl)'><mat-icon>cancel</mat-icon></button>
                         <mat-error *ngIf="nameControl!.invalid">{{getErrorMessage(nameControl)}}</mat-error>
                     </mat-form-field>
@@ -34,7 +34,7 @@
                         <span matPrefix>Surname: &nbsp;</span>
                         <input matInput placeholder='Surname' formControlName='surname'>
                         <button matSuffix mat-mini-fab color="primary" *ngIf='surnameControl!.disabled' (click)='edit(surnameControl)'><mat-icon>edit</mat-icon></button>
-                        <button matSuffix mat-mini-fab color="primary" *ngIf='!(surnameControl!.disabled)' (click)='confirm(surnameControl)'><mat-icon>done</mat-icon></button>
+                        <button matSuffix mat-mini-fab color="primary" *ngIf='!(surnameControl!.disabled) && surnameControl!.valid && surnameControl!.value != ""' (click)='confirm(surnameControl)'><mat-icon>done</mat-icon></button>
                         <button matSuffix mat-mini-fab color="primary" *ngIf='!(surnameControl!.disabled)' (click)='cancel(surnameControl)'><mat-icon>cancel</mat-icon></button>
                         <mat-error *ngIf="surnameControl!.invalid">{{getErrorMessage(surnameControl)}}</mat-error>
                     </mat-form-field>
@@ -43,13 +43,35 @@
             </mat-tab>
 
             <mat-tab>
-                nothing for now
+                
+                <div class="form-item">
+                    <mat-form-field class="max-length" appearance="fill">
+                      <mat-label>Password</mat-label>
+                      <input matInput formControlName='password' [type]="hidePasswords ? 'password' : 'text'" required>
+                      <button mat-icon-button matSuffix (click)="hidePasswords = !hidePasswords" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePasswords">
+                        <mat-icon>{{hidePasswords ? 'visibility_off' : 'visibility'}}</mat-icon>
+                      </button>
+                    <mat-error *ngIf="passwordControl!.invalid">{{getErrorMessage(passwordControl)}}</mat-error>
+                    </mat-form-field>
+                  </div>
+            
+            
+                  <div class="form-item">
+                    <mat-form-field class="max-length"  appearance="fill">
+                      <mat-label>Confirm password</mat-label>
+                      <input matInput formControlName='passwordConfirm' [type]="hidePasswords ? 'password' : 'text'" required>
+                      <button matSuffix mat-mini-fab color="primary" *ngIf='passwordConfirmControl!.valid && passwordControl!.value != ""' (click)='confirm(passwordControl)'><mat-icon>done</mat-icon></button>
+                      <mat-error *ngIf="passwordConfirmControl!.invalid">{{getErrorMessage(passwordConfirmControl)}}</mat-error>
+                    </mat-form-field>
+                  </div>
+
             </mat-tab>
         </mat-tab-group>
 
 
         <div class="form-item">
             <button mat-raised-button color='primary' (click)='toggleTab()'>{{selectedTabLabel}}</button>
+
             <button mat-raised-button mat-dialog-close color='primary' class="float-right" (click)='back()'>Back</button>
         </div>
 

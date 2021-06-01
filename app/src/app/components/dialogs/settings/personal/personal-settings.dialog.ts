@@ -34,6 +34,10 @@ export default class PersonalSettingsDialog implements OnInit {
       surname: [
         { value: '', disabled: true },
         [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100), PersonalSettingsDialog.checkPasswordRequirements]],
+      passwordConfirm: ['', Validators.required],
+    }, {
+      validators: [PersonalSettingsDialog.checkPasswordsMatching],
     });
   }
 
@@ -47,6 +51,14 @@ export default class PersonalSettingsDialog implements OnInit {
     return this.personalForm.get('surname');
   }
 
+  get passwordControl() {
+    return this.personalForm.get('password');
+  }
+
+  get passwordConfirmControl() {
+    return this.personalForm.get('passwordConfirm');
+  }
+
   get loginControl() {
     return this.personalForm.get('login');
   }
@@ -55,7 +67,39 @@ export default class PersonalSettingsDialog implements OnInit {
     if (control!.hasError('required')) return 'Field must not be empty';
     if (control!.hasError('minlength')) return 'Value too short';
     if (control!.hasError('maxlength')) return 'Value too long';
+    if (control!.hasError('noLowerCase')) return 'Password must contain at least 1 lower case';
+    if (control!.hasError('noUpperCase')) return 'Password must contain at least 1 upper case';
+    if (control!.hasError('noNumber')) return 'Password must contain at least 1 digit';
     return '';
+  }
+
+  hidePasswords = true;
+
+  static checkPasswordsMatching(control: AbstractControl) {
+    const pass = control.get('password')!.value;
+    const confirmPass = control.get('passwordConfirm')!.value;
+    if (pass !== confirmPass) {
+      control.get('passwordConfirm')!.setErrors({ mismatchingPasswords: true });
+      return;
+    }
+    control.get('password')!.setErrors(null);
+    control.get('password')!.updateValueAndValidity({ onlySelf: true });
+  }
+
+  static checkPasswordRequirements(control: AbstractControl) {
+    if (control.value !== '' && !RtValidators.hasLowerCase(control.value)) {
+      return { noLowerCase: true };
+    }
+
+    if (control.value !== '' && !RtValidators.hasUpperCase(control.value)) {
+      return { noUpperCase: true };
+    }
+
+    if (control.value !== '' && !RtValidators.hasNumber(control.value)) {
+      return { noNumber: true };
+    }
+
+    return null;
   }
 
   edit(control: AbstractControl|null) {
@@ -80,6 +124,10 @@ export default class PersonalSettingsDialog implements OnInit {
   }
 
   toggleTab() {
+    if (this.passwordControl?.value === '' && this.passwordConfirmControl?.value === '') {
+      this.passwordControl?.setErrors(null);
+      this.passwordConfirmControl?.setErrors(null);
+    }
     if (this.selectedTab.value === 0) this.selectedTab.setValue(1);
     else this.selectedTab.setValue(0);
   }
