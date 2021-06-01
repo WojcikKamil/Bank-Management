@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import SessionStorage from 'src/app/helpers/session-storage';
@@ -37,6 +37,8 @@ export default class PersonalSettingsDialog implements OnInit {
     });
   }
 
+  selectedTab = new FormControl(0);
+
   get nameControl() {
     return this.personalForm.get('name');
   }
@@ -71,5 +73,14 @@ export default class PersonalSettingsDialog implements OnInit {
 
   back() {
     this.dialog.open(SettingsDialog);
+  }
+
+  get selectedTabLabel(): string {
+    return this.selectedTab.value === 0 ? 'Change password' : 'Check credentials';
+  }
+
+  toggleTab() {
+    if (this.selectedTab.value === 0) this.selectedTab.setValue(1);
+    else this.selectedTab.setValue(0);
   }
 }
