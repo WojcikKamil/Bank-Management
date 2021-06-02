@@ -60,8 +60,8 @@ namespace Api.Controllers
                 : Ok(result.Value);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Patch([FromBody] PatchUserRequest request)
+        [HttpPatch]
+        public async Task<ActionResult> Patch([FromBody] PatchRequest request)
         {
             var result = await _userService.PatchUser(request);
 

@@ -31,6 +31,10 @@ export default abstract class ApiService {
     return this.http.put<T>(this.getEndpointUrl(actionUrl), data);
   }
 
+  protected patch<T>(actionUrl: string, data: T): Observable<T> {
+    return this.http.patch<T>(this.getEndpointUrl(actionUrl), data);
+  }
+
   protected getEndpointUrl(actionUrl: string): string {
     return `${environment.apiUrl}/${this.root}${actionUrl}`;
   }

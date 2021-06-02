@@ -5,17 +5,13 @@ using System.Text;
 
 namespace BusinessLogic.Requests.User
 {
-    public class PatchUserRequest
+    public class PatchRequest
     {
         [Required]
         public int Id { get; set; }
 
-        public string Login { get; set; }
+        public string Property { get; set; }
 
-        public string Name { get; set; }
-
-        public string Surname { get; set; }
-
-        public string Password { get; set; }
+        public string Value { get; set; }
     }
 }

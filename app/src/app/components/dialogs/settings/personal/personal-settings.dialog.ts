@@ -1,3 +1,4 @@
+import { isNotNullOrUndefined } from '@angular-eslint/eslint-plugin/dist/utils/utils';
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -111,8 +112,16 @@ export default class PersonalSettingsDialog implements OnInit {
     control!.disable();
   }
 
-  confirm(control: AbstractControl|null) {
-    console.log(control?.value);
+  confirm() {
+    this.service.patchUser({
+      id: this.data.id,
+      login: this.loginControl?.value,
+      name: this.nameControl?.value,
+      surname: this.surnameControl?.value,
+      password: this.passwordControl?.value,
+    }).subscribe((response) => {
+      console.log(response);
+    });
   }
 
   back() {

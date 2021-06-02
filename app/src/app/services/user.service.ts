@@ -30,6 +30,10 @@ export default class UserService extends ApiService {
     return this.put<User>('/user', user);
   }
 
+  patchUser(request: any): Observable<User> {
+    return this.patch<User>('/user', request);
+  }
+
   attemptLogin(request: any): Observable<User> {
     return this.post<any, User>('/users/login', request);
   }
