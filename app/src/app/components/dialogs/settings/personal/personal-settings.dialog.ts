@@ -43,7 +43,7 @@ export default class PersonalSettingsDialog implements OnInit {
       surname: [
         { value: '', disabled: true },
         [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100), 
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100),
         PersonalSettingsDialog.checkPasswordRequirements]],
       passwordConfirm: ['', Validators.required],
     }, {
