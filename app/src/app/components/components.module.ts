@@ -11,6 +11,7 @@ import LoginComponent from './entry/login/login.component';
 import RegisterComponent from './entry/register/register.component';
 import HomeComponent from './home/home.component';
 import NavbarComponent from './home/navbar/navbar.component';
+import MessageSnackbar from './snackbars/message.snackbar';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import NavbarComponent from './home/navbar/navbar.component';
     MessageDialog,
     SettingsDialog,
     PersonalSettingsDialog,
+    MessageSnackbar,
   ],
   imports: [
     BrowserModule,

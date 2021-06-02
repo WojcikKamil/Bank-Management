@@ -2,6 +2,7 @@ import { isNotNullOrUndefined } from '@angular-eslint/eslint-plugin/dist/utils/u
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import SessionStorage from 'src/app/helpers/session-storage';
 import RtValidators from 'src/app/helpers/validation';
@@ -23,6 +24,7 @@ export default class PersonalSettingsDialog implements OnInit {
     private service: UserService,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
 
   get currentUser(): User {
@@ -127,6 +129,17 @@ export default class PersonalSettingsDialog implements OnInit {
     this.service.patchUser(userToPatch).subscribe((response) => {
       this.session.setCurrentUser(response);
       if (property.toLowerCase() !== 'password') this.lock(control);
+      this.openConfirmationSnackBar(property, userToPatch.value);
+    });
+  }
+
+  openConfirmationSnackBar(property: string, value: string) {
+    let message: string;
+    if (property.toLowerCase() === 'password') message = 'Your password has been changed successfully';
+    else message = `Success! Your new ${property}: ${value}!`;
+    this.snackBar.open(message, '', {
+      duration: 3000,
+      panelClass: ['mat-toolbar', 'mat-primary'],
     });
   }
 
