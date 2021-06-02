@@ -102,5 +102,22 @@ namespace BusinessLogic.Services
 
             return UserMapper.FromModelToResult(registeredUserModel);
         }
+
+        public async Task<Result<UserResponse, UserError>> PatchUser(PatchUserRequest request)
+        {
+            if (request.Login.Length != 8)
+                return new Result<UserResponse, UserError>(UserError.InvalidInput);
+
+            User userToUpdate = await _userRepository.GetByIdAsync(request.Id);
+
+            userToUpdate.Login = request.Login ?? userToUpdate.Login;
+            userToUpdate.Name = request.Name ?? userToUpdate.Name;
+            userToUpdate.Surname = request.Surname ?? userToUpdate.Surname;
+            userToUpdate.Password = request.Password ?? userToUpdate.Password;
+
+            _userRepository.Update(userToUpdate);
+
+            return UserMapper.FromModelToResult(userToUpdate);
+        }
     }
 }

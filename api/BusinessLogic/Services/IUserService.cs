@@ -13,5 +13,6 @@ namespace BusinessLogic.Services
         Task<Result<UserResponse, UserError>> GetUserByCredentials(LoginUserRequest request);
         Task<Result<IReadOnlyCollection<UserResponse>, UserError>> GetUsersAsync();
         Task<Result<UserResponse, UserError>> RegisterUser(RegisterUserRequest request);
+        Task<Result<UserResponse, UserError>> PatchUser(PatchUserRequest request);
     }
 }
