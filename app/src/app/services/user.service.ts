@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import ApiService from './api.service';
 import User from '../models/user';
+import Patch from '../models/patch';
 
 @Injectable({
   providedIn: 'root',
@@ -27,11 +28,11 @@ export default class UserService extends ApiService {
   }
 
   putUser(user: User): Observable<User> {
-    return this.put<User>('/user', user);
+    return this.put<User>('/users', user);
   }
 
-  patchUser(request: any): Observable<User> {
-    return this.patch<User>('/user', request);
+  patchUser(request: Patch): Observable<User> {
+    return this.patch<User>('/users', request);
   }
 
   attemptLogin(request: any): Observable<User> {

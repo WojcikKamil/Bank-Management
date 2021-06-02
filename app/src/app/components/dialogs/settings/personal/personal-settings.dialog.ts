@@ -5,6 +5,7 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import SessionStorage from 'src/app/helpers/session-storage';
 import RtValidators from 'src/app/helpers/validation';
+import Patch from 'src/app/models/patch';
 import User from 'src/app/models/user';
 import UserService from 'src/app/services/user.service';
 import SettingsDialog from '../settings.dialog';
@@ -18,11 +19,15 @@ export default class PersonalSettingsDialog implements OnInit {
   personalForm!: FormGroup;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: User,
+    private session: SessionStorage,
     private service: UserService,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
   ) {}
+
+  get currentUser(): User {
+    return this.session.getCurrentUser();
+  }
 
   ngOnInit(): void {
     this.personalForm = this.formBuilder.group({
@@ -71,6 +76,7 @@ export default class PersonalSettingsDialog implements OnInit {
     if (control!.hasError('noLowerCase')) return 'Password must contain at least 1 lower case';
     if (control!.hasError('noUpperCase')) return 'Password must contain at least 1 upper case';
     if (control!.hasError('noNumber')) return 'Password must contain at least 1 digit';
+    if (control!.hasError('mismatchingPasswords')) return 'Passwords do not match';
     return '';
   }
 
@@ -107,20 +113,20 @@ export default class PersonalSettingsDialog implements OnInit {
     control!.enable();
   }
 
-  cancel(control: AbstractControl|null) {
+  lock(control: AbstractControl|null) {
     control?.setValue('');
     control!.disable();
   }
 
-  confirm() {
-    this.service.patchUser({
-      id: this.data.id,
-      login: this.loginControl?.value,
-      name: this.nameControl?.value,
-      surname: this.surnameControl?.value,
-      password: this.passwordControl?.value,
-    }).subscribe((response) => {
-      console.log(response);
+  confirm(control: AbstractControl|null, property: string) {
+    const userToPatch = {
+      id: this.currentUser.id,
+      property,
+      value: control?.value,
+    };
+    this.service.patchUser(userToPatch).subscribe((response) => {
+      this.session.setCurrentUser(response);
+      if (property.toLowerCase() !== 'password') this.lock(control);
     });
   }
 
@@ -133,11 +139,14 @@ export default class PersonalSettingsDialog implements OnInit {
   }
 
   toggleTab() {
-    if (this.passwordControl?.value === '' && this.passwordConfirmControl?.value === '') {
-      this.passwordControl?.setErrors(null);
-      this.passwordConfirmControl?.setErrors(null);
+    if (this.selectedTab.value === 0) {
+      this.selectedTab.setValue(1);
+    } else {
+      this.passwordControl?.setValue('');
+      this.passwordConfirmControl?.setValue('');
+      this.selectedTab.setValue(0);
     }
-    if (this.selectedTab.value === 0) this.selectedTab.setValue(1);
-    else this.selectedTab.setValue(0);
+    this.passwordControl?.setErrors(null);
+    this.passwordConfirmControl?.setErrors(null);
   }
 }
