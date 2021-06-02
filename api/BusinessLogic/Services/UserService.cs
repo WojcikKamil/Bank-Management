@@ -8,6 +8,7 @@ using DataLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -101,6 +102,18 @@ namespace BusinessLogic.Services
             });
 
             return UserMapper.FromModelToResult(registeredUserModel);
+        }
+
+        public async Task<Result<UserResponse, UserError>> PatchUser(PatchRequest request)
+        {
+
+            User userToUpdate = await _userRepository.GetByIdAsync(request.Id);
+
+            userToUpdate = PropertyHelper.PatchObject(userToUpdate, request);
+
+            _userRepository.Update(userToUpdate);
+
+            return UserMapper.FromModelToResult(userToUpdate);
         }
     }
 }

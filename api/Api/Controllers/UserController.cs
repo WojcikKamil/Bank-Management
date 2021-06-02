@@ -60,6 +60,16 @@ namespace Api.Controllers
                 : Ok(result.Value);
         }
 
+        [HttpPatch]
+        public async Task<ActionResult> Patch([FromBody] PatchRequest request)
+        {
+            var result = await _userService.PatchUser(request);
+
+            return result.isError
+                ? HandleError(result.Error)
+                : Ok(result.Value);
+        }
+
         private ActionResult HandleError(UserError error)
         {
             return error switch
