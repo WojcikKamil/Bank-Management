@@ -35,14 +35,16 @@ export default class PersonalSettingsDialog implements OnInit {
     this.personalForm = this.formBuilder.group({
       login: [
         { value: '', disabled: true },
-        [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+        [Validators.required,
+          PersonalSettingsDialog.validatorBanker, PersonalSettingsDialog.validatorNonBanker]],
       name: [
         { value: '', disabled: true },
         [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       surname: [
         { value: '', disabled: true },
         [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100), PersonalSettingsDialog.checkPasswordRequirements]],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(100), 
+        PersonalSettingsDialog.checkPasswordRequirements]],
       passwordConfirm: ['', Validators.required],
     }, {
       validators: [PersonalSettingsDialog.checkPasswordsMatching],
@@ -79,6 +81,8 @@ export default class PersonalSettingsDialog implements OnInit {
     if (control!.hasError('noUpperCase')) return 'Password must contain at least 1 upper case';
     if (control!.hasError('noNumber')) return 'Password must contain at least 1 digit';
     if (control!.hasError('mismatchingPasswords')) return 'Passwords do not match';
+    if (control!.hasError('mustOnlyContainNumbers')) return 'Login must only contain numbers';
+    if (control!.hasError('maxLength8')) return 'Login must contain exactly 8 characters';
     return '';
   }
 
@@ -111,6 +115,28 @@ export default class PersonalSettingsDialog implements OnInit {
     return null;
   }
 
+  static validatorNonBanker(control: AbstractControl) {
+    const session = new SessionStorage();
+    if (!session.getCurrentUser().isBanker && control.value !== '') {
+      if (RtValidators.onlyHasNumbers(control.value)) return { mustOnlyContainNumbers: true };
+
+      if (control.value.length !== 8) return { maxLength8: true };
+    }
+
+    return null;
+  }
+
+  static validatorBanker(control: AbstractControl) {
+    const session = new SessionStorage();
+    if (session.getCurrentUser().isBanker && control.value !== '') {
+      if (control.value.length < 2) return { minlength: true };
+
+      if (control.value.length > 100) return { maxlength: true };
+    }
+
+    return null;
+  }
+
   edit(control: AbstractControl|null) {
     control!.enable();
   }
@@ -135,10 +161,10 @@ export default class PersonalSettingsDialog implements OnInit {
 
   openConfirmationSnackBar(property: string, value: string) {
     let message: string;
-    if (property.toLowerCase() === 'password') message = 'Your password has been changed successfully';
+    if (property.toLowerCase() === 'password') message = 'Your password has been changed successfully!';
     else message = `Success! Your new ${property}: ${value}!`;
     this.snackBar.open(message, '', {
-      duration: 3000,
+      duration: 5000,
       panelClass: ['mat-toolbar', 'mat-primary'],
     });
   }
