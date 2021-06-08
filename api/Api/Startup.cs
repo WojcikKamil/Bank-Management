@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Api.Initializer;
 using BusinessLogic.Services;
+using BusinessLogic.Utils;
 using DataLayer;
 using DataLayer.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -42,7 +44,14 @@ namespace Api
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+            services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddSwaggerGen(c =>
             {
@@ -81,9 +90,12 @@ namespace Api
 
         private static void UpdateDatabase(IServiceProvider serviceProvider)
         {
-            using IServiceScope serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            using var context = serviceScope.ServiceProvider.GetService<BmDbContext>();
-            context.Database.Migrate();
+            using (IServiceScope serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var dbInitializer = serviceScope.ServiceProvider.GetService<IDbInitializer>();
+                dbInitializer.Initialize();
+                dbInitializer.SeedDataAsync();
+            }
         }
     }
 }
