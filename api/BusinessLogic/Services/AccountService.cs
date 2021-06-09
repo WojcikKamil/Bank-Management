@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Errors;
 using BusinessLogic.Mappers;
+using BusinessLogic.Requests.Account;
 using BusinessLogic.Responses;
 using BusinessLogic.Utils;
 using DataLayer.Models;
@@ -39,7 +40,28 @@ namespace BusinessLogic.Services
             return new Result<IReadOnlyCollection<AccountResponse>, AccountError>(serviceResponse);
         }
 
-        public async Task<Result<AccountResponse, AccountError>> RemoveAccount(int id, int accountPlaceholderId)
+        public async Task<Result<AccountResponse, AccountError>> Create(CreateAccountRequest request)
+        {
+            bool isNumberTaken = (await _accountRepository.GetAccountsAsync()).Any(a => a.Number == request.Number);
+            if (isNumberTaken)
+                return new Result<AccountResponse, AccountError>(AccountError.NameAlreadyTaken);
+
+            User owner = await _userRepository.GetByIdAsync(request.UserId);
+            if (owner == null)
+                return new Result<AccountResponse, AccountError>(AccountError.OwnerDoesNotExist);
+            string ownerCredentials = $"{owner.Name} {owner.Surname}";
+
+            Account account = _accountRepository.Create(new Account
+            {
+                Balance = request.Balance,
+                Number = request.Number,
+                UserId = request.UserId
+            });
+
+            return AccountMapper.FromModelToResult(account, ownerCredentials);
+        }
+
+        public async Task<Result<AccountResponse, AccountError>> Remove(int id, int accountPlaceholderId)
         {
             if(_accountRepository.GetByIdAsync(id) == null)
                 return new Result<AccountResponse, AccountError>(AccountError.AccountNotFound);

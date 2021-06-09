@@ -33,10 +33,13 @@ namespace BusinessLogic.Services
         public async Task<Result<IReadOnlyCollection<TransactionResponse>, TransactionError>> GetTransactionsAsync(int accountId)
         {
             List<Transaction> repositoryResponse = await _transactionRepository.GetTransactionsAsync();
-            List<TransactionResponse> serviceResponse = repositoryResponse
-                .FindAll(t => t.SenderId == accountId || t.ReceiverId == accountId)
-                .Select(t => TransactionMapper.FromModelToResponse(t))
-                .ToList();
+            TransactionResponse[] tasks = await Task.WhenAll(
+                    repositoryResponse
+                        .FindAll(t => t.SenderId == accountId || t.ReceiverId == accountId)
+                        .Select(t => InitializeMapper(t))
+                );
+
+            List<TransactionResponse> serviceResponse = tasks.Where(t => t != null).ToList();
 
             return new Result<IReadOnlyCollection<TransactionResponse>, TransactionError>(serviceResponse);
         }
@@ -68,10 +71,10 @@ namespace BusinessLogic.Services
                 Value = request.Amount
             });
 
-            return TransactionMapper.FromModelToResult(newTransaction);
+            return TransactionMapper.FromModelToResult(newTransaction, receiver.Number, sender.Number);
         }
 
-        public async Task<Result<TransactionResponse, TransactionError>> Grant(GrantRequest request)
+        public async Task<Result<TransactionResponse, TransactionError>> Grant(GrantRequest request, int masterAccountId)
         {
             User requester = await _userRepository.GetByIdAsync(request.RequesterUserId);
             if (!requester.IsBanker)
@@ -90,13 +93,23 @@ namespace BusinessLogic.Services
             Transaction newTransaction = _transactionRepository.Create(new Transaction
             {
                 ReceiverId = receiverAccount.Id,
-                SenderId = 60095,
+                SenderId = masterAccountId,
                 Timestamp = DateTime.Now,
                 Title = request.Title,
                 Value = request.Amount
             });
 
-            return TransactionMapper.FromModelToResult(newTransaction);
+            Account master = await _accountRepository.GetByIdAsync(masterAccountId);
+
+            return TransactionMapper.FromModelToResult(newTransaction, receiverAccount.Number, master.Number);
+        }
+
+        private async Task<TransactionResponse> InitializeMapper(Transaction transaction)
+        {
+            Account sender = await _accountRepository.GetByIdAsync(transaction.SenderId);
+            Account receiver = await _accountRepository.GetByIdAsync(transaction.ReceiverId);
+
+            return TransactionMapper.FromModelToResponse(transaction, receiver.Number, sender.Number);
         }
 
     }

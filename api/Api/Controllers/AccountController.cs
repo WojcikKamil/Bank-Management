@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Errors;
+using BusinessLogic.Requests.Account;
 using BusinessLogic.Responses;
 using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -30,10 +31,20 @@ namespace Api.Controllers
                 : Ok(result.Value);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<AccountResponse>> RemoveAccount(int id)
+        [HttpPost]
+        public async Task<ActionResult<AccountResponse>> Create([FromBody] CreateAccountRequest request)
         {
-            var result = await _accountService.RemoveAccount(id, _options.Value.RemovedAccountPort);
+            var result = await _accountService.Create(request);
+
+            return result.isError
+                ? HandleError(result.Error)
+                : Ok(result.Value);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<AccountResponse>> Remove(int id)
+        {
+            var result = await _accountService.Remove(id, _options.Value.RemovedAccountPort);
 
             return result.isError
                 ? HandleError(result.Error)

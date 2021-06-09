@@ -1,4 +1,5 @@
 ﻿using BusinessLogic.Errors;
+using BusinessLogic.Requests.Account;
 using BusinessLogic.Responses;
 using BusinessLogic.Utils;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ namespace BusinessLogic.Services
     public interface IAccountService
     {
         Task<Result<IReadOnlyCollection<AccountResponse>, AccountError>> GetAccounts(int userId);
-        Task<Result<AccountResponse, AccountError>> RemoveAccount(int id, int accountPlaceholderId);
+
+        Task<Result<AccountResponse, AccountError>> Create(CreateAccountRequest request);
+
+        Task<Result<AccountResponse, AccountError>> Remove(int id, int accountPlaceholderId);
     }
 }

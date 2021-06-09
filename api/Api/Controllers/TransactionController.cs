@@ -3,6 +3,7 @@ using BusinessLogic.Requests.Transaction;
 using BusinessLogic.Responses;
 using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,15 @@ namespace Api.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;
+        private readonly IOptions<AppSettings> _options;
 
-        public TransactionController(ITransactionService transactionService)
+        public TransactionController(ITransactionService transactionService, IOptions<AppSettings> options)
         {
             _transactionService = transactionService;
+            _options = options;
         }
 
-        [HttpGet]
+        [HttpGet("{accountId}")]
         public async Task<ActionResult<IReadOnlyCollection<TransactionResponse>>> GetTransactions(int accountId)
         {
             var result = await _transactionService.GetTransactionsAsync(accountId);
@@ -43,7 +46,7 @@ namespace Api.Controllers
         [HttpPatch("grant")]
         public async Task<ActionResult<TransactionResponse>> GrantFunds([FromBody] GrantRequest request)
         {
-            var result = await _transactionService.Grant(request);
+            var result = await _transactionService.Grant(request, _options.Value.MasterAccountPort);
 
             return result.isError
                 ? HandleError(result.Error)

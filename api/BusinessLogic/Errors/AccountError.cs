@@ -9,5 +9,6 @@ namespace BusinessLogic.Errors
         None = 0,
         AccountNotFound = 1,
         OwnerDoesNotExist = 2,
+        NameAlreadyTaken = 3,
     }
 }
