@@ -32,10 +32,8 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string envConnectionString = Environment.GetEnvironmentVariable(EnvironmentVariables.DatabaseConnectionStringEnvVarName);
-            string connectionString = string.IsNullOrWhiteSpace(envConnectionString)
-                ? Configuration.GetConnectionString("BankManagement")
-                : envConnectionString;
+            services.Configure<AppSettings>(Configuration);
+
             services.AddCors();
 
             services.AddDbContext<BmDbContext>();

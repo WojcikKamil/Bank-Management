@@ -1,7 +1,9 @@
 ﻿using DataLayer;
 using DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +14,12 @@ namespace Api.Initializer
     public class DbInitializer : IDbInitializer
     {
         private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IOptions<AppSettings> _appSettings;
 
-        public DbInitializer(IServiceScopeFactory scopeFactory)
+        public DbInitializer(IServiceScopeFactory scopeFactory, IOptions<AppSettings> appSettings)
         {
-            this._scopeFactory = scopeFactory;
+            _scopeFactory = scopeFactory;
+            _appSettings = appSettings;
         }
 
         public void Initialize()
@@ -33,49 +37,88 @@ namespace Api.Initializer
         {
             using (var serviceScope = _scopeFactory.CreateScope())
             {
-                using (var context = serviceScope.ServiceProvider.GetService<BmDbContext>())
-                using (var transaction = context.Database.BeginTransaction())
+                using (BmDbContext context = serviceScope.ServiceProvider.GetService<BmDbContext>())
+                using (IDbContextTransaction transaction = context.Database.BeginTransaction())
                 {
-                    if (!context.Users.Any(a => a.Id == 60079))
-                    {
-                        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[User] ON");
+                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[User] ON");
 
-                        context.Users.Add(new User
-                        {
-                            Id = 60079,
-                            IsBanker = true,
-                            Login = "admin",
-                            Password = "924E3f0c575578E855042E4282",
-                            Name = "Bank",
-                            Surname = "Manager",
-                        });
+                    AddMasterUser(context);
+                    AddRemovedUserPlaceholder(context);
 
-                        context.SaveChanges();
+                    await context.SaveChangesAsync();
 
-                        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[User] OFF");
+                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[User] OFF");
+                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[Account] ON");
 
-                        transaction.Commit();
-                    }
+                    AddMasterAccount(context);
+                    AddRemovedAccountPlaceholder(context);
 
-                    if (!context.Accounts.Any(a => a.Id == 60095))
-                    {
-                        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[Account] ON");
+                    await context.SaveChangesAsync();
 
-                        context.Accounts.Add(new Account
-                        {
-                            Id = 60095,
-                            Balance = 100000000000,
-                            Number = "Master",
-                            UserId = 60079
-                        });
+                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[Account] OFF");
 
-                        context.SaveChanges();
-
-                        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[Account] OFF");
-
-                        transaction.Commit();
-                    }
+                    await transaction.CommitAsync();
                 }
+            }
+        }
+
+        private void AddMasterUser(BmDbContext context)
+        {
+            if (!context.Users.Any(a => a.Id == _appSettings.Value.masterUserPort))
+            {
+                context.Users.Add(new User
+                {
+                    Id = _appSettings.Value.masterUserPort,
+                    IsBanker = true,
+                    Login = "admin",
+                    Password = "0000",
+                    Name = "Bank",
+                    Surname = "Manager",
+                });
+            }
+        }
+
+        private void AddMasterAccount (BmDbContext context)
+        {
+            if (!context.Accounts.Any(a => a.Id == _appSettings.Value.masterAccountPort))
+            {
+                context.Accounts.Add(new Account
+                {
+                    Id = _appSettings.Value.masterAccountPort,
+                    Balance = 100000000000,
+                    Number = "Master",
+                    UserId = 60079
+                });
+            }
+        }
+
+        private void AddRemovedUserPlaceholder (BmDbContext context)
+        {
+            if (!context.Users.Any(a => a.Id == _appSettings.Value.removedUserPort))
+            {
+                context.Users.Add(new User
+                {
+                    Id = _appSettings.Value.removedUserPort,
+                    IsBanker = true,
+                    Login = "admin_removed",
+                    Password = "0000",
+                    Name = "REMOVED",
+                    Surname = "USER",
+                });
+            }
+        }
+
+        private void AddRemovedAccountPlaceholder (BmDbContext context)
+        {
+            if (!context.Accounts.Any(a => a.Id == _appSettings.Value.removedAccountPort))
+            {
+                context.Accounts.Add(new Account
+                {
+                    Id = _appSettings.Value.removedAccountPort,
+                    Balance = 0,
+                    Number = "REMOVED",
+                    UserId = _appSettings.Value.removedUserPort
+                });
             }
         }
     }
