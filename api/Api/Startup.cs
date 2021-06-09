@@ -33,6 +33,7 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration);
+            services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddCors();
 
@@ -88,12 +89,10 @@ namespace Api
 
         private static void UpdateDatabase(IServiceProvider serviceProvider)
         {
-            using (IServiceScope serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var dbInitializer = serviceScope.ServiceProvider.GetService<IDbInitializer>();
-                dbInitializer.Initialize();
-                dbInitializer.SeedDataAsync();
-            }
+            using IServiceScope serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            var dbInitializer = serviceScope.ServiceProvider.GetService<IDbInitializer>();
+            dbInitializer.Initialize();
+            dbInitializer.SeedDataAsync();
         }
     }
 }

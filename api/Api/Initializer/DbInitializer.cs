@@ -24,51 +24,43 @@ namespace Api.Initializer
 
         public void Initialize()
         {
-            using (var serviceScope = _scopeFactory.CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<BmDbContext>())
-                {
-                    context.Database.Migrate();
-                }
-            }
+            using var serviceScope = _scopeFactory.CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<BmDbContext>();
+            context.Database.Migrate();
         }
 
         public async void SeedDataAsync()
         {
-            using (var serviceScope = _scopeFactory.CreateScope())
-            {
-                using (BmDbContext context = serviceScope.ServiceProvider.GetService<BmDbContext>())
-                using (IDbContextTransaction transaction = context.Database.BeginTransaction())
-                {
-                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[User] ON");
+            using var serviceScope = _scopeFactory.CreateScope();
+            using BmDbContext context = serviceScope.ServiceProvider.GetService<BmDbContext>();
+            using IDbContextTransaction transaction = context.Database.BeginTransaction();
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[User] ON");
 
-                    AddMasterUser(context);
-                    AddRemovedUserPlaceholder(context);
+            AddMasterUser(context);
+            AddRemovedUserPlaceholder(context);
 
-                    await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[User] OFF");
-                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[Account] ON");
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[User] OFF");
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[Account] ON");
 
-                    AddMasterAccount(context);
-                    AddRemovedAccountPlaceholder(context);
+            AddMasterAccount(context);
+            AddRemovedAccountPlaceholder(context);
 
-                    await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[Account] OFF");
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT [dbo].[Account] OFF");
 
-                    await transaction.CommitAsync();
-                }
-            }
+            await transaction.CommitAsync();
         }
 
         private void AddMasterUser(BmDbContext context)
         {
-            if (!context.Users.Any(a => a.Id == _appSettings.Value.masterUserPort))
+            if (!context.Users.Any(a => a.Id == _appSettings.Value.MasterUserPort))
             {
                 context.Users.Add(new User
                 {
-                    Id = _appSettings.Value.masterUserPort,
+                    Id = _appSettings.Value.MasterUserPort,
                     IsBanker = true,
                     Login = "admin",
                     Password = "0000",
@@ -80,11 +72,11 @@ namespace Api.Initializer
 
         private void AddMasterAccount (BmDbContext context)
         {
-            if (!context.Accounts.Any(a => a.Id == _appSettings.Value.masterAccountPort))
+            if (!context.Accounts.Any(a => a.Id == _appSettings.Value.MasterAccountPort))
             {
                 context.Accounts.Add(new Account
                 {
-                    Id = _appSettings.Value.masterAccountPort,
+                    Id = _appSettings.Value.MasterAccountPort,
                     Balance = 100000000000,
                     Number = "Master",
                     UserId = 60079
@@ -94,11 +86,11 @@ namespace Api.Initializer
 
         private void AddRemovedUserPlaceholder (BmDbContext context)
         {
-            if (!context.Users.Any(a => a.Id == _appSettings.Value.removedUserPort))
+            if (!context.Users.Any(a => a.Id == _appSettings.Value.RemovedUserPort))
             {
                 context.Users.Add(new User
                 {
-                    Id = _appSettings.Value.removedUserPort,
+                    Id = _appSettings.Value.RemovedUserPort,
                     IsBanker = true,
                     Login = "admin_removed",
                     Password = "0000",
@@ -110,14 +102,14 @@ namespace Api.Initializer
 
         private void AddRemovedAccountPlaceholder (BmDbContext context)
         {
-            if (!context.Accounts.Any(a => a.Id == _appSettings.Value.removedAccountPort))
+            if (!context.Accounts.Any(a => a.Id == _appSettings.Value.RemovedAccountPort))
             {
                 context.Accounts.Add(new Account
                 {
-                    Id = _appSettings.Value.removedAccountPort,
+                    Id = _appSettings.Value.RemovedAccountPort,
                     Balance = 0,
                     Number = "REMOVED",
-                    UserId = _appSettings.Value.removedUserPort
+                    UserId = _appSettings.Value.RemovedUserPort
                 });
             }
         }

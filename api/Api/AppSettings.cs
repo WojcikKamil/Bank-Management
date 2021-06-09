@@ -7,9 +7,9 @@ namespace Api
 {
     public class AppSettings
     {
-        public int masterUserPort { get; set; }
-        public int masterAccountPort { get; set; }
-        public int removedUserPort { get; set; }
-        public int removedAccountPort { get; set; }
+        public int MasterUserPort { get; set; }
+        public int MasterAccountPort { get; set; }
+        public int RemovedUserPort { get; set; }
+        public int RemovedAccountPort { get; set; }
     }
 }

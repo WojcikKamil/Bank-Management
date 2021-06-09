@@ -9,6 +9,6 @@ namespace BusinessLogic.Services
     public interface IAccountService
     {
         Task<Result<IReadOnlyCollection<AccountResponse>, AccountError>> GetAccounts(int userId);
-        Task<Result<AccountResponse, AccountError>> RemoveAccount(int id);
+        Task<Result<AccountResponse, AccountError>> RemoveAccount(int id, int accountPlaceholderId);
     }
 }

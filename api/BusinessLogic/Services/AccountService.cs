@@ -23,9 +23,13 @@ namespace BusinessLogic.Services
         public async Task<Result<IReadOnlyCollection<AccountResponse>, AccountError>> GetAccounts(int userId)
         {
             User user = await _userRepository.GetByIdAsync(userId);
-            List<Account> repoResponse = await _accountRepository.GetAccountsAsync();
+
+            if (user == null)
+                return new Result<IReadOnlyCollection<AccountResponse>, AccountError>(AccountError.OwnerDoesNotExist);
+
             string userCredentials = $"{user.Name} {user.Surname}";
 
+            List<Account> repoResponse = await _accountRepository.GetAccountsAsync();
             var serviceResponse = repoResponse
                 .FindAll(a => a.UserId == userId)
                 .Select(a => AccountMapper.FromModelToResponse(a, userCredentials))
@@ -35,15 +39,12 @@ namespace BusinessLogic.Services
             return new Result<IReadOnlyCollection<AccountResponse>, AccountError>(serviceResponse);
         }
 
-        public async Task<Result<AccountResponse, AccountError>> RemoveAccount(int id)
+        public async Task<Result<AccountResponse, AccountError>> RemoveAccount(int id, int accountPlaceholderId)
         {
-
             if(_accountRepository.GetByIdAsync(id) == null)
-            {
                 return new Result<AccountResponse, AccountError>(AccountError.AccountNotFound);
-            }
 
-            Account accountToBeRemoved = _accountRepository.Delete(id);
+            Account accountToBeRemoved = _accountRepository.Delete(id, accountPlaceholderId);
 
             User user = await _userRepository.GetByIdAsync(accountToBeRemoved.UserId);
             string userCredentials = $"{user.Name} {user.Surname}";

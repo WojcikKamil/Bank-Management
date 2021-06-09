@@ -2,6 +2,7 @@
 using BusinessLogic.Responses;
 using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,9 +13,11 @@ namespace Api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        public AccountController(IAccountService accountService)
+        private readonly IOptions<AppSettings> _options;
+        public AccountController(IAccountService accountService, IOptions<AppSettings> options)
         {
             _accountService = accountService;
+            _options = options;
         }
 
         [HttpGet("{userId}")]
@@ -30,7 +33,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<AccountResponse>> RemoveAccount(int id)
         {
-            var result = await _accountService.RemoveAccount(id);
+            var result = await _accountService.RemoveAccount(id, _options.Value.RemovedAccountPort);
 
             return result.isError
                 ? HandleError(result.Error)
@@ -42,6 +45,7 @@ namespace Api.Controllers
             return error switch
             {
                 AccountError.AccountNotFound => NotFound("Account does not exist"),
+                AccountError.OwnerDoesNotExist => BadRequest("Owner of the account does not exist"),
                 _ => throw new InvalidOperationException($"Invalid error: {error}")
             };
         }
