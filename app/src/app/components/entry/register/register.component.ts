@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import RtValidators from 'src/app/helpers/validation';
+import RegisterUserRequest from 'src/app/requests/register-user.request';
 import UserService from 'src/app/services/user.service';
 import MessageDialog from '../../dialogs/message.dialog';
 
@@ -157,14 +158,14 @@ export default class RegisterComponent implements OnInit {
   }
 
   async initializeRegisterRequest() {
-    const registerForm = {
+    const registerRequest: RegisterUserRequest = {
       name: this.nameControl?.value,
       surname: this.surnameControl?.value,
       password: this.passwordControl?.value,
       isBanker: this.isBankerControl?.value,
     };
     await this.userService
-      .attemptRegister(registerForm)
+      .attemptRegister(registerRequest)
       .subscribe((response) => {
         this.dialog.open(MessageDialog, {
           data: {

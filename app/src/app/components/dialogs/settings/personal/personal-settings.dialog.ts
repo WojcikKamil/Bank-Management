@@ -8,6 +8,7 @@ import SessionStorage from 'src/app/helpers/session-storage';
 import RtValidators from 'src/app/helpers/validation';
 import Patch from 'src/app/models/patch';
 import User from 'src/app/models/user';
+import PatchRequest from 'src/app/requests/patch.request';
 import UserService from 'src/app/services/user.service';
 import SettingsDialog from '../settings.dialog';
 
@@ -147,15 +148,15 @@ export default class PersonalSettingsDialog implements OnInit {
   }
 
   confirm(control: AbstractControl|null, property: string) {
-    const userToPatch = {
+    const patchRequest: PatchRequest = {
       id: this.currentUser.id,
       property,
       value: control?.value,
     };
-    this.service.patchUser(userToPatch).subscribe((response) => {
+    this.service.patchUser(patchRequest).subscribe((response) => {
       this.session.setCurrentUser(response);
       if (property.toLowerCase() !== 'password') this.lock(control);
-      this.openConfirmationSnackBar(property, userToPatch.value);
+      this.openConfirmationSnackBar(property, patchRequest.value);
     });
   }
 

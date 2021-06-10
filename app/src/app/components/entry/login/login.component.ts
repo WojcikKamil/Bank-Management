@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import SessionStorage from 'src/app/helpers/session-storage';
 import User from 'src/app/models/user';
+import LoginUserRequest from 'src/app/requests/login-user.request';
 import UserService from 'src/app/services/user.service';
 import MessageDialog from '../../dialogs/message.dialog';
 
@@ -74,11 +75,13 @@ export default class LoginComponent implements OnInit {
   }
 
   async login() {
-    const loginVal = this.loginControl?.value;
-    const passwordVal = this.passwordControl?.value;
+    const loginRequest: LoginUserRequest = {
+      login: this.loginControl!.value,
+      password: this.passwordControl!.value,
+    };
 
     await this.userService
-      .attemptLogin({ login: loginVal, password: passwordVal })
+      .attemptLogin(loginRequest)
       .subscribe((response) => {
         this.session.setCurrentUser(response);
         this.router.navigateByUrl('/home');
