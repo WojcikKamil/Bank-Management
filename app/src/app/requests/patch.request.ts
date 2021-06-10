@@ -1,4 +1,4 @@
-export default class Patch {
+export default class PatchRequest {
   id!: number;
 
   property!: string;

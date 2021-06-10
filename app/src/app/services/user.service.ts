@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import ApiService from './api.service';
 import User from '../models/user';
-import Patch from '../models/patch';
+import PatchRequest from '../requests/patch.request';
+import RegisterUserRequest from '../requests/register-user.request';
+import LoginUserRequest from '../requests/login-user.request';
 
 @Injectable({
   providedIn: 'root',
@@ -19,27 +21,23 @@ export default class UserService extends ApiService {
     return this.get<User[]>('/users');
   }
 
-  postUser(user: any): Observable<User> {
-    return this.post<any, User>('/users', user);
+  patchUser(request: PatchRequest): Observable<User> {
+    return this.patch<User>('/users', request);
+  }
+
+  getUser(id: number): Observable<User> {
+    return this.get<User>(`users/${id}`);
   }
 
   deleteUser(id: number): Observable<void> {
     return this.delete<void>(`/users/${id}`);
   }
 
-  putUser(user: User): Observable<User> {
-    return this.put<User>('/users', user);
-  }
-
-  patchUser(request: Patch): Observable<User> {
-    return this.patch<User>('/users', request);
-  }
-
-  attemptLogin(request: any): Observable<User> {
-    return this.post<any, User>('/users/login', request);
-  }
-
-  attemptRegister(request: any): Observable<User> {
+  attemptRegister(request: RegisterUserRequest): Observable<User> {
     return this.post<any, User>('/users/register', request);
+  }
+
+  attemptLogin(request: LoginUserRequest): Observable<User> {
+    return this.post<any, User>('/users/login', request);
   }
 }
