@@ -164,23 +164,27 @@ export default class RegisterComponent implements OnInit {
       password: this.passwordControl?.value,
       isBanker: this.isBankerControl?.value,
     };
+
     await this.userService
       .attemptRegister(registerRequest)
-      .subscribe((response) => {
-        this.dialog.open(MessageDialog, {
-          data: {
-            title: 'Congratulation!',
-            message: `Welcome, ${response.name}. You may now log in using your login: <b>${response.login}</b>`,
-          },
-        });
-        this.router.navigateByUrl('/login');
-      }, (error) => {
-        this.dialog.open(MessageDialog, {
-          data: {
-            title: 'Error',
-            message: error.error,
-          },
-        });
-      });
+      .then(
+        (onfulfilled) => {
+          this.dialog.open(MessageDialog, {
+            data: {
+              title: 'Congratulation!',
+              message: `Welcome, ${onfulfilled.name}. You may now log in using your login: ${onfulfilled.login}`,
+            },
+          });
+          this.router.navigateByUrl('/login');
+        },
+        (onrejected) => {
+          this.dialog.open(MessageDialog, {
+            data: {
+              title: 'Error',
+              message: onrejected,
+            },
+          });
+        },
+      );
   }
 }

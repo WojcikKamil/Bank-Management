@@ -1,3 +1,4 @@
+import { Input } from '@angular/core';
 import User from 'src/app/models/user';
 
 export default class SessionStorage {

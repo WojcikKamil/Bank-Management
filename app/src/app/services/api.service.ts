@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import environment from '../../environments/environment';
-import Patch from '../models/patch';
+import PatchRequest from '../requests/patch.request';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +32,7 @@ export default abstract class ApiService {
     return this.http.put<T>(this.getEndpointUrl(actionUrl), data);
   }
 
-  protected patch<T>(actionUrl: string, data: Patch): Observable<T> {
+  protected patch<T>(actionUrl: string, data: PatchRequest): Observable<T> {
     return this.http.patch<T>(this.getEndpointUrl(actionUrl), data);
   }
 

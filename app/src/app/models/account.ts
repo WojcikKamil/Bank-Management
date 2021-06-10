@@ -5,5 +5,5 @@ export default class Account {
 
     balance!: number;
 
-    userId!: number;
+    ownerCredentials!: number;
 }

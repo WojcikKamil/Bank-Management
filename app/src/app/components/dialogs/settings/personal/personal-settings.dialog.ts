@@ -1,12 +1,9 @@
-import { isNotNullOrUndefined } from '@angular-eslint/eslint-plugin/dist/utils/utils';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
 import SessionStorage from 'src/app/helpers/session-storage';
 import RtValidators from 'src/app/helpers/validation';
-import Patch from 'src/app/models/patch';
 import User from 'src/app/models/user';
 import PatchRequest from 'src/app/requests/patch.request';
 import UserService from 'src/app/services/user.service';

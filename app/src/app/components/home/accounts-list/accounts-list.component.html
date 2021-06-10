@@ -1,5 +1,5 @@
 <div>
-    <div *ngFor="let account of temporaryDataSeed; index as i" >
+    <div *ngFor="let account of filteredAccounts; index as i" >
         <mat-card class="account-element colors-active" matRipple> 
             <mat-card-header>
                 <div mat-card-avatar>
@@ -12,7 +12,7 @@
             <mat-card-content>
                 <div mat-line>
                     <span>
-                        Account owner: {{currentUser.name}} {{currentUser.surname}}
+                        Account owner: {{account.ownerCredentials}}
                     </span>
     
                     <p class="balance">Balance: <span class="balance-amount">${{account.balance}}</span></p>

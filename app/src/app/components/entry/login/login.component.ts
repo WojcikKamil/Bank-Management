@@ -82,16 +82,14 @@ export default class LoginComponent implements OnInit {
 
     await this.userService
       .attemptLogin(loginRequest)
-      .subscribe((response) => {
-        this.session.setCurrentUser(response);
-        this.router.navigateByUrl('/home');
-      }, (error) => {
-        this.dialog.open(MessageDialog, {
+      .then(
+        (onfulfilled) => this.router.navigateByUrl('/home'),
+        (onrejected) => this.dialog.open(MessageDialog, {
           data: {
             title: 'Login failed',
-            message: error.error,
+            message: onrejected,
           },
-        });
-      });
+        }),
+      );
   }
 }

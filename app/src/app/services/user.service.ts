@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import ApiService from './api.service';
 import User from '../models/user';
@@ -13,8 +13,41 @@ import LoginUserRequest from '../requests/login-user.request';
 export default class UserService extends ApiService {
   protected root = 'api';
 
+  private currentUser?: User;
+
   constructor(protected http: HttpClient) {
     super(http);
+  }
+
+  public getCurrentUser(): User|undefined {
+    return this.currentUser;
+  }
+
+  async attemptLogin(request: LoginUserRequest): Promise<User> {
+    return new Promise((resolve, reject) => {
+      this.login(request).subscribe(
+        (response) => {
+          this.currentUser = response;
+          resolve(response);
+        },
+        (error) => {
+          reject(new Error(error.error));
+        },
+      );
+    });
+  }
+
+  async attemptRegister(request: RegisterUserRequest): Promise<User> {
+    return new Promise((resolve, reject) => {
+      this.register(request).subscribe(
+        (response) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error.error);
+        },
+      );
+    });
   }
 
   getAllUsers(): Observable<User[]> {
@@ -26,18 +59,18 @@ export default class UserService extends ApiService {
   }
 
   getUser(id: number): Observable<User> {
-    return this.get<User>(`users/${id}`);
+    return this.get<User>(`/users/${id}`);
   }
 
   deleteUser(id: number): Observable<void> {
     return this.delete<void>(`/users/${id}`);
   }
 
-  attemptRegister(request: RegisterUserRequest): Observable<User> {
+  register(request: RegisterUserRequest): Observable<User> {
     return this.post<any, User>('/users/register', request);
   }
 
-  attemptLogin(request: LoginUserRequest): Observable<User> {
+  login(request: LoginUserRequest): Observable<User> {
     return this.post<any, User>('/users/login', request);
   }
 }
