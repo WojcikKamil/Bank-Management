@@ -45,7 +45,7 @@ namespace DataLayer.Repositories
             return AccountToUpdate;
         }
 
-        public Account Delete(int accountId)
+        public Account Delete(int accountId, int accountPlaceholderId)
         {
             Account AccountToDelete = _context
                 .Accounts
@@ -53,6 +53,17 @@ namespace DataLayer.Repositories
 
             if (AccountToDelete == null)
                 return null;
+
+            _context.Transactions
+                    .Where(t => t.SenderId == accountId || t.ReceiverId == accountId)
+                    .ToList()
+                    .ForEach(transaction =>
+                    {
+                        if (transaction.SenderId == accountId)
+                            transaction.SenderId = accountPlaceholderId;
+                        else if (transaction.ReceiverId == accountId)
+                            transaction.ReceiverId = accountPlaceholderId;
+                    });
 
             _context.Accounts.Remove(AccountToDelete);
             _context.SaveChanges();

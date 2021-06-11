@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Api.Initializer;
 using BusinessLogic.Services;
+using BusinessLogic.Utils;
 using DataLayer;
 using DataLayer.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -30,10 +32,9 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string envConnectionString = Environment.GetEnvironmentVariable(EnvironmentVariables.DatabaseConnectionStringEnvVarName);
-            string connectionString = string.IsNullOrWhiteSpace(envConnectionString)
-                ? Configuration.GetConnectionString("BankManagement")
-                : envConnectionString;
+            services.Configure<AppSettings>(Configuration);
+            services.AddSingleton<IConfiguration>(Configuration);
+
             services.AddCors();
 
             services.AddDbContext<BmDbContext>();
@@ -42,7 +43,14 @@ namespace Api
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+            services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddSwaggerGen(c =>
             {
@@ -82,8 +90,9 @@ namespace Api
         private static void UpdateDatabase(IServiceProvider serviceProvider)
         {
             using IServiceScope serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            using var context = serviceScope.ServiceProvider.GetService<BmDbContext>();
-            context.Database.Migrate();
+            var dbInitializer = serviceScope.ServiceProvider.GetService<IDbInitializer>();
+            dbInitializer.Initialize();
+            dbInitializer.SeedDataAsync();
         }
     }
 }

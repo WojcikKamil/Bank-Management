@@ -1,13 +1,11 @@
-import { isNotNullOrUndefined } from '@angular-eslint/eslint-plugin/dist/utils/utils';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import SessionStorage from 'src/app/helpers/session-storage';
 import RtValidators from 'src/app/helpers/validation';
-import Patch from 'src/app/models/patch';
 import User from 'src/app/models/user';
+import PatchRequest from 'src/app/requests/patch.request';
+import AccountService from 'src/app/services/account.service';
 import UserService from 'src/app/services/user.service';
 import SettingsDialog from '../settings.dialog';
 
@@ -20,15 +18,15 @@ export default class PersonalSettingsDialog implements OnInit {
   personalForm!: FormGroup;
 
   constructor(
-    private session: SessionStorage,
-    private service: UserService,
+    private userService: UserService,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private accountService: AccountService,
   ) {}
 
   get currentUser(): User {
-    return this.session.getCurrentUser();
+    return this.userService.getCurrentUser()!;
   }
 
   ngOnInit(): void {
@@ -36,7 +34,7 @@ export default class PersonalSettingsDialog implements OnInit {
       login: [
         { value: '', disabled: true },
         [Validators.required,
-          PersonalSettingsDialog.validatorBanker, PersonalSettingsDialog.validatorNonBanker]],
+          this.validatorBanker, this.validatorNonBanker]],
       name: [
         { value: '', disabled: true },
         [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -115,9 +113,8 @@ export default class PersonalSettingsDialog implements OnInit {
     return null;
   }
 
-  static validatorNonBanker(control: AbstractControl) {
-    const session = new SessionStorage();
-    if (!session.getCurrentUser().isBanker && control.value !== '') {
+  validatorNonBanker(control: AbstractControl) {
+    if (!this.userService.getCurrentUser()!.isBanker && control.value !== '') {
       if (RtValidators.onlyHasNumbers(control.value)) return { mustOnlyContainNumbers: true };
 
       if (control.value.length !== 8) return { maxLength8: true };
@@ -126,9 +123,8 @@ export default class PersonalSettingsDialog implements OnInit {
     return null;
   }
 
-  static validatorBanker(control: AbstractControl) {
-    const session = new SessionStorage();
-    if (session.getCurrentUser().isBanker && control.value !== '') {
+  validatorBanker(control: AbstractControl) {
+    if (this.userService.getCurrentUser()!.isBanker && control.value !== '') {
       if (control.value.length < 2) return { minlength: true };
 
       if (control.value.length > 100) return { maxlength: true };
@@ -146,17 +142,25 @@ export default class PersonalSettingsDialog implements OnInit {
     control!.disable();
   }
 
-  confirm(control: AbstractControl|null, property: string) {
-    const userToPatch = {
+  async confirm(control: AbstractControl|null, property: string) {
+    const patchRequest: PatchRequest = {
       id: this.currentUser.id,
       property,
       value: control?.value,
     };
-    this.service.patchUser(userToPatch).subscribe((response) => {
-      this.session.setCurrentUser(response);
-      if (property.toLowerCase() !== 'password') this.lock(control);
-      this.openConfirmationSnackBar(property, userToPatch.value);
-    });
+
+    await this.userService
+      .attemptPatch(patchRequest)
+      .then(
+        (onfulfilled) => {
+          if (property.toLowerCase() !== 'password') this.lock(control);
+          this.openConfirmationSnackBar(property, patchRequest.value);
+          this.accountService.updateUserAccounts();
+        },
+        (onrejected) => {
+          this.openErrorSnackbar(onrejected);
+        },
+      );
   }
 
   openConfirmationSnackBar(property: string, value: string) {
@@ -166,6 +170,13 @@ export default class PersonalSettingsDialog implements OnInit {
     this.snackBar.open(message, '', {
       duration: 5000,
       panelClass: ['mat-toolbar', 'mat-primary'],
+    });
+  }
+
+  openErrorSnackbar(error: string) {
+    this.snackBar.open(error, '', {
+      duration: 5000,
+      panelClass: ['mat-toolbar', 'mat-warn'],
     });
   }
 

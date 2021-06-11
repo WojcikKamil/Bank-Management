@@ -9,6 +9,7 @@ import PersonalSettingsDialog from './dialogs/settings/personal/personal-setting
 import SettingsDialog from './dialogs/settings/settings.dialog';
 import LoginComponent from './entry/login/login.component';
 import RegisterComponent from './entry/register/register.component';
+import AccountsList from './home/accounts-list/accounts-list.component';
 import HomeComponent from './home/home.component';
 import NavbarComponent from './home/navbar/navbar.component';
 import MessageSnackbar from './snackbars/message.snackbar';
@@ -23,6 +24,7 @@ import MessageSnackbar from './snackbars/message.snackbar';
     SettingsDialog,
     PersonalSettingsDialog,
     MessageSnackbar,
+    AccountsList,
   ],
   imports: [
     BrowserModule,

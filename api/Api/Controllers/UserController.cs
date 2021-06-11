@@ -3,6 +3,7 @@ using BusinessLogic.Requests.User;
 using BusinessLogic.Responses;
 using BusinessLogic.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,12 @@ namespace Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IOptions<AppSettings> _options;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IOptions<AppSettings> options)
         {
             _userService = userService;
+            _options = options;
         }
 
         [HttpGet]
@@ -64,6 +67,16 @@ namespace Api.Controllers
         public async Task<ActionResult> Patch([FromBody] PatchRequest request)
         {
             var result = await _userService.PatchUser(request);
+
+            return result.isError
+                ? HandleError(result.Error)
+                : Ok(result.Value);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Remove(int id)
+        {
+            var result = await _userService.RemoveUser(id, _options.Value.RemovedAccountPort);
 
             return result.isError
                 ? HandleError(result.Error)

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import SessionStorage from 'src/app/helpers/session-storage';
 import User from 'src/app/models/user';
+import LoginUserRequest from 'src/app/requests/login-user.request';
 import UserService from 'src/app/services/user.service';
 import MessageDialog from '../../dialogs/message.dialog';
 
@@ -22,7 +22,6 @@ export default class LoginComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private dialog: MatDialog,
-    private session: SessionStorage,
   ) {}
 
   ngOnInit() {
@@ -30,7 +29,7 @@ export default class LoginComponent implements OnInit {
       login: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(63)]],
     });
-    this.session.logOutCurrentUser();
+    this.userService.logOutCurrentUser();
   }
 
   get loginControl() {
@@ -74,21 +73,21 @@ export default class LoginComponent implements OnInit {
   }
 
   async login() {
-    const loginVal = this.loginControl?.value;
-    const passwordVal = this.passwordControl?.value;
+    const loginRequest: LoginUserRequest = {
+      login: this.loginControl!.value,
+      password: this.passwordControl!.value,
+    };
 
     await this.userService
-      .attemptLogin({ login: loginVal, password: passwordVal })
-      .subscribe((response) => {
-        this.session.setCurrentUser(response);
-        this.router.navigateByUrl('/home');
-      }, (error) => {
-        this.dialog.open(MessageDialog, {
+      .attemptLogin(loginRequest)
+      .then(
+        (onfulfilled) => this.router.navigateByUrl('/home'),
+        (onrejected) => this.dialog.open(MessageDialog, {
           data: {
             title: 'Login failed',
-            message: error.error,
+            message: onrejected,
           },
-        });
-      });
+        }),
+      );
   }
 }

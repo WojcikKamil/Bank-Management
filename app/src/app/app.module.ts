@@ -8,7 +8,6 @@ import AppComponent from './app.component';
 import MaterialModule from './materials.module';
 import ComponentsModule from './components/components.module';
 import AuthGuard from './auth.guard';
-import SessionStorage from './helpers/session-storage';
 
 @NgModule({
   declarations: [
@@ -26,7 +25,6 @@ import SessionStorage from './helpers/session-storage';
   ],
   providers: [
     AuthGuard,
-    SessionStorage,
     BrowserAnimationsModule,
   ],
   bootstrap: [AppComponent],

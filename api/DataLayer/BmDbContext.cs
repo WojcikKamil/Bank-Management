@@ -51,7 +51,7 @@ namespace DataLayer
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__Account__UserId__75A278F5");
             });
 
@@ -77,13 +77,13 @@ namespace DataLayer
                 entity.HasOne(d => d.Receiver)
                     .WithMany(p => p.TransactionReceivers)
                     .HasForeignKey(d => d.ReceiverId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__Transacti__Recei__797309D9");
 
                 entity.HasOne(d => d.Sender)
                     .WithMany(p => p.TransactionSenders)
                     .HasForeignKey(d => d.SenderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__Transacti__Sende__787EE5A0");
             });
 

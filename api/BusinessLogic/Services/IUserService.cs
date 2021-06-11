@@ -14,5 +14,6 @@ namespace BusinessLogic.Services
         Task<Result<IReadOnlyCollection<UserResponse>, UserError>> GetUsersAsync();
         Task<Result<UserResponse, UserError>> RegisterUser(RegisterUserRequest request);
         Task<Result<UserResponse, UserError>> PatchUser(PatchRequest request);
+        Task<Result<UserResponse, UserError>> RemoveUser(int id, int accountPlaceholderId);
     }
 }

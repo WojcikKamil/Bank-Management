@@ -1,5 +1,6 @@
 ﻿using DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace DataLayer.Repositories
             return userToUpdate;
         }
 
-        public User Delete(int userId)
+        public User Delete(int userId, int accountPlaceholderId)
         {
             User userToDelete = _context
                 .Users
@@ -54,6 +55,28 @@ namespace DataLayer.Repositories
             if (userToDelete == null)
                 return null;
 
+            List<Account> accountsToRemove = new List<Account>();
+
+            _context.Accounts
+                .Where(a => a.UserId == userId)
+                .ToList()
+                .ForEach(account =>
+                {
+                    _context.Transactions
+                    .Where(t => t.SenderId == account.Id || t.ReceiverId == account.Id)
+                    .ToList()
+                    .ForEach(transaction =>
+                    {
+                        if (transaction.SenderId == account.Id)
+                            transaction.SenderId = accountPlaceholderId;
+                        else if (transaction.ReceiverId == account.Id)
+                            transaction.ReceiverId = accountPlaceholderId;
+                    });
+
+                    accountsToRemove.Add(account);
+                });
+
+            _context.Accounts.RemoveRange(accountsToRemove);
             _context.Users.Remove(userToDelete);
             _context.SaveChanges();
 

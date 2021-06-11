@@ -106,7 +106,6 @@ namespace BusinessLogic.Services
 
         public async Task<Result<UserResponse, UserError>> PatchUser(PatchRequest request)
         {
-
             User userToUpdate = await _userRepository.GetByIdAsync(request.Id);
 
             userToUpdate = PropertyHelper.PatchObject(userToUpdate, request);
@@ -114,6 +113,18 @@ namespace BusinessLogic.Services
             _userRepository.Update(userToUpdate);
 
             return UserMapper.FromModelToResult(userToUpdate);
+        }
+
+        public async Task<Result<UserResponse, UserError>> RemoveUser(int id, int accountPlaceholderId)
+        {
+            if(await _userRepository.GetByIdAsync(id) == null)
+            {
+                return new Result<UserResponse, UserError>(UserError.UserNotFound);
+            }
+
+            User userToBeRemoved = _userRepository.Delete(id, accountPlaceholderId);
+
+            return UserMapper.FromModelToResult(userToBeRemoved);
         }
     }
 }

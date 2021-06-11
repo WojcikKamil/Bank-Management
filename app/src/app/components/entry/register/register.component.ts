@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import RtValidators from 'src/app/helpers/validation';
+import RegisterUserRequest from 'src/app/requests/register-user.request';
 import UserService from 'src/app/services/user.service';
 import MessageDialog from '../../dialogs/message.dialog';
 
@@ -157,29 +158,33 @@ export default class RegisterComponent implements OnInit {
   }
 
   async initializeRegisterRequest() {
-    const registerForm = {
+    const registerRequest: RegisterUserRequest = {
       name: this.nameControl?.value,
       surname: this.surnameControl?.value,
       password: this.passwordControl?.value,
       isBanker: this.isBankerControl?.value,
     };
+
     await this.userService
-      .attemptRegister(registerForm)
-      .subscribe((response) => {
-        this.dialog.open(MessageDialog, {
-          data: {
-            title: 'Congratulation!',
-            message: `Welcome, ${response.name}. You may now log in using your login: <b>${response.login}</b>`,
-          },
-        });
-        this.router.navigateByUrl('/login');
-      }, (error) => {
-        this.dialog.open(MessageDialog, {
-          data: {
-            title: 'Error',
-            message: error.error,
-          },
-        });
-      });
+      .attemptRegister(registerRequest)
+      .then(
+        (onfulfilled) => {
+          this.dialog.open(MessageDialog, {
+            data: {
+              title: 'Congratulation!',
+              message: `Welcome, ${onfulfilled.name}. You may now log in using your login: ${onfulfilled.login}`,
+            },
+          });
+          this.router.navigateByUrl('/login');
+        },
+        (onrejected) => {
+          this.dialog.open(MessageDialog, {
+            data: {
+              title: 'Error',
+              message: onrejected,
+            },
+          });
+        },
+      );
   }
 }

@@ -7,7 +7,7 @@ namespace DataLayer.Repositories
     public interface IUserRepository
     {
         User Create(User user);
-        User Delete(int userId);
+        User Delete(int userId, int accountPlaceholderId);
         Task<User> GetByIdAsync(int id);
         Task<List<User>> GetUsersAsync();
         User Update(User userToUpdate);
