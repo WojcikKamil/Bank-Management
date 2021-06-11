@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import RtValidators from 'src/app/helpers/validation';
 import User from 'src/app/models/user';
 import PatchRequest from 'src/app/requests/patch.request';
+import AccountService from 'src/app/services/account.service';
 import UserService from 'src/app/services/user.service';
 import SettingsDialog from '../settings.dialog';
 
@@ -21,6 +22,7 @@ export default class PersonalSettingsDialog implements OnInit {
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private accountService: AccountService,
   ) {}
 
   get currentUser(): User {
@@ -153,6 +155,7 @@ export default class PersonalSettingsDialog implements OnInit {
         (onfulfilled) => {
           if (property.toLowerCase() !== 'password') this.lock(control);
           this.openConfirmationSnackBar(property, patchRequest.value);
+          this.accountService.updateUserAccounts();
         },
         (onrejected) => {
           this.openErrorSnackbar(onrejected);

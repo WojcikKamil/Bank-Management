@@ -15,13 +15,13 @@ export default class AccountsList implements OnInit {
     private accountService: AccountService,
   ) {}
 
-  ngOnInit(): void {
-    this.accountService.getUserAccounts(this.currentUser.id).subscribe((response) => {
-      this.filteredAccounts = response;
-    });
+  async ngOnInit() {
+    await this.accountService.initUserAccounts(this.currentUser.id);
   }
 
-  filteredAccounts?: Array<Account>;
+  get filteredAccountsList() {
+    return this.accountService.filteredAccountsList;
+  }
 
   get currentUser(): User {
     return this.userService.getCurrentUser()!;

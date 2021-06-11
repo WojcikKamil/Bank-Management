@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import ApiService from './api.service';
 import Account from '../models/account';
 import CreateAccountRequest from '../requests/create-account.request';
+import BmUtils from '../helpers/bm-utils';
 
 @Injectable({
   providedIn: 'root',
@@ -15,15 +16,54 @@ export default class AccountService extends ApiService {
     super(http);
   }
 
-  getUserAccounts(userId: number): Observable<Account[]> {
+  private accountsOwnersIds: number[] = [];
+
+  public filteredAccountsList: Account[] = [];
+
+  async initUserAccounts(userId: number): Promise<Account[]> {
+    return new Promise((resolve, reject) => {
+      this.$getUserAccounts(userId).subscribe(
+        (response) => {
+          this.accountsOwnersIds.push(userId);
+          this.filteredAccountsList = response;
+          resolve(response);
+        },
+        (error) => {
+          reject(new Error(error.error));
+        },
+      );
+    });
+  }
+
+  async updateUserAccounts() {
+    this.filteredAccountsList = [];
+
+    this.accountsOwnersIds.forEach((a) => {
+      this.$getUserAccounts(a).subscribe((response) => {
+        this.filteredAccountsList = this.filteredAccountsList.concat(response);
+      });
+    });
+  }
+
+  toggleUserAccounts(userId :number) {
+    const idIndex = this.accountsOwnersIds.indexOf(userId);
+
+    (idIndex === -1)
+      ? this.accountsOwnersIds.push(userId)
+      : this.accountsOwnersIds.splice(idIndex);
+
+    this.updateUserAccounts();
+  }
+
+  private $getUserAccounts(userId: number): Observable<Account[]> {
     return this.get<Account[]>(`/accounts/${userId}`);
   }
 
-  postAccount(account: CreateAccountRequest): Observable<Account> {
+  private $postAccount(account: CreateAccountRequest): Observable<Account> {
     return this.post<any, Account>('/accounts', account);
   }
 
-  deleteAccount(id: number): Observable<void> {
+  private $deleteAccount(id: number): Observable<void> {
     return this.delete<void>(`/accounts/${id}`);
   }
 }

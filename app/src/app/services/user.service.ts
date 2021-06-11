@@ -25,7 +25,7 @@ export default class UserService extends ApiService {
 
   async attemptRegister(request: RegisterUserRequest): Promise<User> {
     return new Promise((resolve, reject) => {
-      this.register(request).subscribe(
+      this.$register(request).subscribe(
         (response) => {
           resolve(response);
         },
@@ -38,7 +38,7 @@ export default class UserService extends ApiService {
 
   async attemptLogin(request: LoginUserRequest): Promise<User> {
     return new Promise((resolve, reject) => {
-      this.login(request).subscribe(
+      this.$login(request).subscribe(
         (response) => {
           this.currentUser = response;
           resolve(response);
@@ -52,7 +52,7 @@ export default class UserService extends ApiService {
 
   async attemptPatch(request: PatchRequest): Promise<User> {
     return new Promise((resolve, reject) => {
-      this.patchUser(request).subscribe(
+      this.$patchUser(request).subscribe(
         (response) => {
           this.currentUser = response;
           resolve(response);
@@ -72,27 +72,27 @@ export default class UserService extends ApiService {
     this.currentUser = undefined;
   }
 
-  private getAllUsers(): Observable<User[]> {
+  private $getAllUsers(): Observable<User[]> {
     return this.get<User[]>('/users');
   }
 
-  private patchUser(request: PatchRequest): Observable<User> {
+  private $patchUser(request: PatchRequest): Observable<User> {
     return this.patch<User>('/users', request);
   }
 
-  private getUser(id: number): Observable<User> {
+  private $getUser(id: number): Observable<User> {
     return this.get<User>(`/users/${id}`);
   }
 
-  private deleteUser(id: number): Observable<void> {
+  private $deleteUser(id: number): Observable<void> {
     return this.delete<void>(`/users/${id}`);
   }
 
-  private register(request: RegisterUserRequest): Observable<User> {
+  private $register(request: RegisterUserRequest): Observable<User> {
     return this.post<any, User>('/users/register', request);
   }
 
-  private login(request: LoginUserRequest): Observable<User> {
+  private $login(request: LoginUserRequest): Observable<User> {
     return this.post<any, User>('/users/login', request);
   }
 }

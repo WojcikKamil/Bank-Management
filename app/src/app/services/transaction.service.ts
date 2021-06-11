@@ -16,15 +16,15 @@ export default class TransactionService extends ApiService {
     super(http);
   }
 
-  getAccountTransactions(accountId: number): Observable<Transaction[]> {
+  private $getAccountTransactions(accountId: number): Observable<Transaction[]> {
     return this.get<Transaction[]>(`/transactions/${accountId}`);
   }
 
-  transferFunds(request: TransferRequest): Observable<Transaction> {
+  private $transferFunds(request: TransferRequest): Observable<Transaction> {
     return this.patch<Transaction>('/transactions', request);
   }
 
-  grantFunds(request: GrantRequest): Observable<Transaction> {
+  private $grantFunds(request: GrantRequest): Observable<Transaction> {
     return this.patch<Transaction>('/transactions', request);
   }
 }
