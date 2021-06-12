@@ -12,6 +12,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatRippleModule } from '@angular/material/core';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 const modules = [
   MatFormFieldModule,
@@ -28,6 +30,8 @@ const modules = [
   MatTabsModule,
   MatSnackBarModule,
   MatRippleModule,
+  MatSidenavModule,
+  MatGridListModule,
 ];
 
 @NgModule({

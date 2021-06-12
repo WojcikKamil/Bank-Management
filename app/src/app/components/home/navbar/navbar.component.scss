@@ -1,3 +1,7 @@
+.toolbar {
+  height:12vh;
+}
+
 .example-spacer {
     flex: 1 1 auto;
   }
@@ -11,4 +15,15 @@
   right: 5px;
   top: 4px;
   font-size: 15px;
+}
+
+.icon-logo {
+  font-size: 25px !important;
+  position: relative;
+  top: 72px;
+  left: 20%;
+  width: 24px;
+  height: 24px;
+  transform: scale(10);
+  color: white;
 }

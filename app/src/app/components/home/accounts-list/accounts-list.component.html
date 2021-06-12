@@ -1,23 +1,25 @@
-<div>
-    <div *ngFor="let account of filteredAccountsList; index as i" >
-        <mat-card class="account-element colors-active" matRipple> 
-            <mat-card-header>
-                <div mat-card-avatar>
-                    <mat-icon class="icon">local_atm</mat-icon>
-                </div>
-                <mat-card-title>{{account.number}}</mat-card-title>
-                <mat-card-subtitle>Account number</mat-card-subtitle>
-            </mat-card-header>
-    
-            <mat-card-content>
-                <div mat-line>
-                    <span>
-                        Account owner: {{account.ownerCredentials}}
-                    </span>
-    
-                    <p class="balance">Balance: <span class="balance-amount">${{account.balance}}</span></p>
-                </div>
-            </mat-card-content>
-        </mat-card>
+<div class="accounts-list-global">
+    <div class="accounts-list">
+        <div *ngFor="let account of filteredAccountsList; index as i" >
+            <mat-card class="account-element colors-active" matRipple> 
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon class="icon">local_atm</mat-icon>
+                    </div>
+                    <mat-card-title>{{account.number}}</mat-card-title>
+                    <mat-card-subtitle>Account number</mat-card-subtitle>
+                </mat-card-header>
+        
+                <mat-card-content>
+                    <div mat-line>
+                        <span>
+                            Account owner: {{account.ownerCredentials}}
+                        </span>
+        
+                        <p class="balance">Balance: <span class="balance-amount">${{account.balance}}</span></p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
     </div>
 </div>
