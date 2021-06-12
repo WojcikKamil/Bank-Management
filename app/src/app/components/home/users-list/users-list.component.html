@@ -1,0 +1,36 @@
+<div class="users-component-global container">
+  <form [formGroup]='selection'>
+
+    <mat-selection-list formControlName='usersList'>
+  
+      <div mat-subheader>Your profile</div>
+      <mat-divider></mat-divider>
+  
+      <mat-list-option (click)='updateUsersSelection()' [value]='currentUser.id' class="hide-checkbox">
+        <mat-icon mat-list-icon fill>{{getIcon(currentUser)}}</mat-icon>
+        {{currentUser.name}} {{currentUser.surname}}
+      </mat-list-option>
+      
+    
+      <mat-divider></mat-divider>
+      <div mat-subheader>Clients</div>
+      <mat-divider></mat-divider>
+  
+      <mat-list-option *ngFor="let user of clientsList" (click)='updateUsersSelection()' [value]='user.id' class="hide-checkbox">
+        <mat-icon mat-list-icon fill>{{getIcon(user)}}</mat-icon>
+        {{user.name}} {{user.surname}}
+      </mat-list-option>
+  
+    
+      <mat-divider></mat-divider>
+      <div mat-subheader>Bankers</div>
+      <mat-divider></mat-divider>
+  
+      <mat-list-option *ngFor="let banker of bankersList" (click)='updateUsersSelection()' [value]='banker.id' class="hide-checkbox">
+        <mat-icon mat-list-icon fill>{{getIcon(banker)}}</mat-icon>
+        {{banker.name}} {{banker.surname}}
+      </mat-list-option> 
+  
+    </mat-selection-list>
+  </form>
+</div>

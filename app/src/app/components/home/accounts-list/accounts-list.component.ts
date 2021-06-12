@@ -9,7 +9,7 @@ import UserService from 'src/app/services/user.service';
   templateUrl: 'accounts-list.component.html',
   styleUrls: ['accounts-list.component.scss'],
 })
-export default class AccountsList implements OnInit {
+export default class AccountsListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private accountService: AccountService,

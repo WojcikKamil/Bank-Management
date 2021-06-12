@@ -9,9 +9,10 @@ import PersonalSettingsDialog from './dialogs/settings/personal/personal-setting
 import SettingsDialog from './dialogs/settings/settings.dialog';
 import LoginComponent from './entry/login/login.component';
 import RegisterComponent from './entry/register/register.component';
-import AccountsList from './home/accounts-list/accounts-list.component';
+import AccountsListComponent from './home/accounts-list/accounts-list.component';
 import HomeComponent from './home/home.component';
 import NavbarComponent from './home/navbar/navbar.component';
+import UsersListComponent from './home/users-list/users-list.component';
 import MessageSnackbar from './snackbars/message.snackbar';
 
 @NgModule({
@@ -24,15 +25,16 @@ import MessageSnackbar from './snackbars/message.snackbar';
     SettingsDialog,
     PersonalSettingsDialog,
     MessageSnackbar,
-    AccountsList,
+    AccountsListComponent,
+    UsersListComponent,
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    BrowserAnimationsModule,
   ],
   providers: [],
 })

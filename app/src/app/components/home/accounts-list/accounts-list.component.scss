@@ -1,7 +1,16 @@
+.accounts-list-global {
+    height: 100%;
+    // width: 100vw;;
+    width: 100%;
+}
+
+.accounts-list {
+    padding: 10px;
+}
+
 .account-element {
-    width: 80%;
     height: 100px;
-    margin: 10px;
+    margin-bottom: 10px;
     cursor: pointer;
 
     user-select: none;

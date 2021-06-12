@@ -19,8 +19,28 @@ export default class UserService extends ApiService {
     super(http);
   }
 
+  private unfilteredUsersList: User[] = [];
+
   public getCurrentUser(): User|undefined {
     return this.currentUser;
+  }
+
+  public getBankers(): User[] {
+    return this.unfilteredUsersList
+      .filter(
+        (u) => u.isBanker === true
+        && u.id !== 60079
+        && u.id !== 60095,
+      );
+  }
+
+  public getClients(): User[] {
+    return this.unfilteredUsersList
+      .filter(
+        (u) => u.isBanker === false
+        && u.id !== 60079
+        && u.id !== 60095,
+      );
   }
 
   async attemptRegister(request: RegisterUserRequest): Promise<User> {
@@ -59,6 +79,20 @@ export default class UserService extends ApiService {
         },
         (error) => {
           reject(error.error);
+        },
+      );
+    });
+  }
+
+  async initUsersList(): Promise<User[]> {
+    return new Promise((resolve, reject) => {
+      this.$getAllUsers().subscribe(
+        (response) => {
+          this.unfilteredUsersList = response;
+          resolve(response);
+        },
+        (error) => {
+          reject(new Error(error.error));
         },
       );
     });

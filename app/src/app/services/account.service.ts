@@ -45,12 +45,8 @@ export default class AccountService extends ApiService {
     });
   }
 
-  toggleUserAccounts(userId :number) {
-    const idIndex = this.accountsOwnersIds.indexOf(userId);
-
-    (idIndex === -1)
-      ? this.accountsOwnersIds.push(userId)
-      : this.accountsOwnersIds.splice(idIndex);
+  toggleUserAccounts(userIds :number[]) {
+    this.accountsOwnersIds = userIds;
 
     this.updateUserAccounts();
   }

@@ -1,10 +1,17 @@
-<div>
-    <div>
+<div class="home-global no-overflow">
+    <div  class="navbar">
         <navbar-component></navbar-component>
     </div>
 
-
-    <div class="accounts-list">
-        <accounts-list></accounts-list>
+    <div class="body-lists home-global">
+        <mat-drawer-container autosize class="body-lists home-global ">
+            <mat-drawer #drawer1 mode='side' opened='true' class="drawer">
+                <users-list></users-list>
+            </mat-drawer>
+            
+            <div >
+                <accounts-list></accounts-list>
+            </div>
+        </mat-drawer-container>
     </div>
 </div>
