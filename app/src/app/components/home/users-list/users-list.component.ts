@@ -54,7 +54,6 @@ export default class UsersListComponent implements OnInit {
 
   updateUsersSelection() {
     this.accountService.toggleUserAccounts(this.usersListControl!.value);
-    console.log(this.usersListControl!.value);
   }
 
   getIcon(user: User): string {

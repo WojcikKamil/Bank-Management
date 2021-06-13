@@ -5,6 +5,7 @@ import ApiService from './api.service';
 import Account from '../models/account';
 import CreateAccountRequest from '../requests/create-account.request';
 import BmUtils from '../helpers/bm-utils';
+import TransactionService from './transaction.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,20 +13,37 @@ import BmUtils from '../helpers/bm-utils';
 export default class AccountService extends ApiService {
   protected root = 'api';
 
-  constructor(protected http: HttpClient) {
+  constructor(
+    protected http: HttpClient,
+    protected transactionService: TransactionService,
+  ) {
     super(http);
   }
+
+  private selectedAccount?: Account;
 
   private accountsOwnersIds: number[] = [];
 
   public filteredAccountsList: Account[] = [];
 
+  public getSelectedAccount(): Account|undefined {
+    return this.selectedAccount;
+  }
+
   async initUserAccounts(userId: number): Promise<Account[]> {
     return new Promise((resolve, reject) => {
       this.$getUserAccounts(userId).subscribe(
-        (response) => {
+        (response: Account[]) => {
           this.accountsOwnersIds.push(userId);
           this.filteredAccountsList = response;
+
+          const arrayDestructing = response[0];
+          this.selectedAccount = arrayDestructing;
+
+          console.log(this.selectedAccount);
+
+          this.transactionService.initTransactionsList(arrayDestructing.id);
+
           resolve(response);
         },
         (error) => {

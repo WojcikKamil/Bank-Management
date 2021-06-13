@@ -14,6 +14,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatRippleModule } from '@angular/material/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const modules = [
   MatFormFieldModule,
@@ -32,6 +35,9 @@ const modules = [
   MatRippleModule,
   MatSidenavModule,
   MatGridListModule,
+  MatButtonToggleModule,
+  MatBottomSheetModule,
+  MatExpansionModule,
 ];
 
 @NgModule({

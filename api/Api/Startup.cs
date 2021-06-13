@@ -37,7 +37,7 @@ namespace Api
 
             services.AddCors();
 
-            services.AddDbContext<BmDbContext>();
+            services.AddTransient<BmDbContext>();
 
             services.AddControllers();
 

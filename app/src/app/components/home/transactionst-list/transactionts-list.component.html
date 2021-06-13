@@ -1,0 +1,46 @@
+<div class="transactions-list-global">
+    <form [formGroup]='transactionsForm'>
+
+        <mat-button-toggle-group formControlName="matButtonToggleGroup">
+            <mat-button-toggle value="inbound" aria-label="Text align left">
+                <mat-icon>move_to_inbox</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="all" aria-label="Text align center">
+                <mat-icon>inbox</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="outbound" aria-label="Text align right">
+                <mat-icon>unarchive</mat-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+        
+        <mat-accordion>
+            <!-- <mat-expansion-panel panelOpenState='true' [expanded]="true" *ngFor="let panel of panels"> -->
+            <mat-expansion-panel panelOpenState='true' [expanded]="true">
+                <!-- <mat-expansion-panel-header>{{panel.displayValue}}</mat-expansion-panel-header> -->
+                <mat-expansion-panel-header>test</mat-expansion-panel-header>
+                <mat-accordion>
+                    <!-- <mat-expansion-panel *ngFor="let t of getFilteredTransactions(panel)"> -->
+                    <mat-expansion-panel *ngFor="let t of filteredTransactions">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title [ngStyle]="{'color': supplyModel(t).color}">{{supplyModel(t).symbol}} ${{t.value}}</mat-panel-title>
+                            <mat-panel-description>{{objectifyDate(t).hour}}:{{objectifyDate(t).minute}}</mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <a class="header-text">{{supplyModel(t).userType}}</a>: {{supplyModel(t).displayNumber}}
+                        <mat-divider></mat-divider>
+                        <div class="text-container">
+                            <a class="header-text">Title:</a> 
+                            {{t.title}}
+                        </div>
+                        <mat-divider></mat-divider>
+
+                        <div class="date-container">
+                            {{t.timestamp}}
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+            </mat-expansion-panel>
+        </mat-accordion>
+
+    </form>
+</div>

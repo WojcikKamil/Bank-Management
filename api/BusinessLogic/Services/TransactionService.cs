@@ -33,13 +33,10 @@ namespace BusinessLogic.Services
         public async Task<Result<IReadOnlyCollection<TransactionResponse>, TransactionError>> GetTransactionsAsync(int accountId)
         {
             List<Transaction> repositoryResponse = await _transactionRepository.GetTransactionsAsync();
-            TransactionResponse[] tasks = await Task.WhenAll(
-                    repositoryResponse
-                        .FindAll(t => t.SenderId == accountId || t.ReceiverId == accountId)
-                        .Select(t => InitializeMapper(t))
-                );
-
-            List<TransactionResponse> serviceResponse = tasks.Where(t => t != null).ToList();
+            List<TransactionResponse> serviceResponse = repositoryResponse
+                .FindAll(t => t.SenderId == accountId || t.ReceiverId == accountId)
+                .Select(t => InitializeMapper(t))
+                .ToList();
 
             return new Result<IReadOnlyCollection<TransactionResponse>, TransactionError>(serviceResponse);
         }
@@ -104,10 +101,10 @@ namespace BusinessLogic.Services
             return TransactionMapper.FromModelToResult(newTransaction, receiverAccount.Number, master.Number);
         }
 
-        private async Task<TransactionResponse> InitializeMapper(Transaction transaction)
+        private TransactionResponse InitializeMapper(Transaction transaction)
         {
-            Account sender = await _accountRepository.GetByIdAsync(transaction.SenderId);
-            Account receiver = await _accountRepository.GetByIdAsync(transaction.ReceiverId);
+            Account sender = _accountRepository.GetByIdAsync(transaction.SenderId).GetAwaiter().GetResult();
+            Account receiver = _accountRepository.GetByIdAsync(transaction.ReceiverId).GetAwaiter().GetResult();
 
             return TransactionMapper.FromModelToResponse(transaction, receiver.Number, sender.Number);
         }

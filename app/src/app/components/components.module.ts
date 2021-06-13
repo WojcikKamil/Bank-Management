@@ -12,6 +12,7 @@ import RegisterComponent from './entry/register/register.component';
 import AccountsListComponent from './home/accounts-list/accounts-list.component';
 import HomeComponent from './home/home.component';
 import NavbarComponent from './home/navbar/navbar.component';
+import TransactionsListComponent from './home/transactionst-list/transactionts-list.component';
 import UsersListComponent from './home/users-list/users-list.component';
 import MessageSnackbar from './snackbars/message.snackbar';
 
@@ -27,6 +28,7 @@ import MessageSnackbar from './snackbars/message.snackbar';
     MessageSnackbar,
     AccountsListComponent,
     UsersListComponent,
+    TransactionsListComponent,
   ],
   imports: [
     BrowserModule,
