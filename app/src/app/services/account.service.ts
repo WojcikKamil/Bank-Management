@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import ApiService from './api.service';
 import Account from '../models/account';
 import CreateAccountRequest from '../requests/create-account.request';
-import BmUtils from '../helpers/bm-utils';
 import TransactionService from './transaction.service';
 
 @Injectable({
@@ -39,8 +38,6 @@ export default class AccountService extends ApiService {
 
           const arrayDestructing = response[0];
           this.selectedAccount = arrayDestructing;
-
-          console.log(this.selectedAccount);
 
           this.transactionService.initTransactionsList(arrayDestructing.id);
 

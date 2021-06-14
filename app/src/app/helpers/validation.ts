@@ -1,5 +1,3 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms';
-
 export default class RtValidators {
   static hasLowerCase(str: string) {
     return (/[a-z]/.test(str));

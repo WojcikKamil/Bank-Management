@@ -13,17 +13,14 @@
             </mat-button-toggle>
         </mat-button-toggle-group>
         
-        <mat-accordion>
-            <!-- <mat-expansion-panel panelOpenState='true' [expanded]="true" *ngFor="let panel of panels"> -->
-            <mat-expansion-panel panelOpenState='true' [expanded]="true">
-                <!-- <mat-expansion-panel-header>{{panel.displayValue}}</mat-expansion-panel-header> -->
-                <mat-expansion-panel-header>test</mat-expansion-panel-header>
+        <mat-accordion [multi]='true'>
+            <mat-expansion-panel [expanded]="true" *ngFor="let panel of panels">
+                <mat-expansion-panel-header>{{panel.displayValue}}</mat-expansion-panel-header>
                 <mat-accordion>
-                    <!-- <mat-expansion-panel *ngFor="let t of getFilteredTransactions(panel)"> -->
-                    <mat-expansion-panel *ngFor="let t of filteredTransactions">
+                    <mat-expansion-panel *ngFor="let t of getFilteredTransactions(panel)">
                         <mat-expansion-panel-header>
                             <mat-panel-title [ngStyle]="{'color': supplyModel(t).color}">{{supplyModel(t).symbol}} ${{t.value}}</mat-panel-title>
-                            <mat-panel-description>{{objectifyDate(t).hour}}:{{objectifyDate(t).minute}}</mat-panel-description>
+                            <mat-panel-description>{{getDescription(panel, t.timestamp)}}</mat-panel-description>
                         </mat-expansion-panel-header>
                         <a class="header-text">{{supplyModel(t).userType}}</a>: {{supplyModel(t).displayNumber}}
                         <mat-divider></mat-divider>

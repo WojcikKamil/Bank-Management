@@ -6,20 +6,21 @@ import TransactionService from 'src/app/services/transaction.service';
 import UserService from 'src/app/services/user.service';
 import User from 'src/app/models/user';
 import Transaction from 'src/app/models/transaction';
-
-export interface DateObject {
-  hour: string,
-  minute: string,
-  day: string,
-  month: string,
-  year: string,
-}
+import DateService from 'src/app/services/date.service';
 
 export interface TransactionSupplier {
   color: string,
   userType: string,
   displayNumber: string,
   symbol: string,
+}
+
+export interface Panel {
+  id: number,
+  displayValue: string,
+  timeFrom: number,
+  timeTo: number,
+  display: boolean,
 }
 
 @Component({
@@ -35,6 +36,7 @@ export default class TransactionsListComponent implements OnInit {
     private transactionService: TransactionService,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
+    private dateService: DateService,
   ) {}
 
   async ngOnInit() {
@@ -46,43 +48,46 @@ export default class TransactionsListComponent implements OnInit {
     await this.transactionService.initTransactionsList(this.selectedAccount!.id);
   }
 
-  // get panels():any[] {
-  //   const today = new Date().getTime();
-  //   return [
-  //     {
-  //       displayValue: 'From past 24 hours',
-  //       timeFrom: today,
-  //       timeTo: today - 86400000,
-  //     },
-  //     {
-  //       displayValue: 'From past 7 days',
-  //       timeFrom: today - 86400000,
-  //       timeTo: today - 604800000,
-  //     },
-  //     {
-  //       displayValue: 'From past month',
-  //       timeFrom: today - 604800000,
-  //       timeTo: today - 2629800000,
-  //     },
-  //     {
-  //       displayValue: 'From past 3 months',
-  //       timeFrom: today - 2629800000,
-  //       timeTo: today - 7889400000,
-  //     },
-  //     {
-  //       displayValue: 'Older than 3 months',
-  //       timeFrom: today - 7889400000,
-  //       timeTo: 0,
-  //     },
-  //   ];
-  // }
+  private panelsInit: Panel[] = [
+    {
+      id: 1,
+      displayValue: 'From past 24 hours',
+      timeFrom: new Date().getTime(),
+      timeTo: new Date().getTime() - 86400000,
+      display: true,
+    },
+    {
+      id: 2,
+      displayValue: 'From past 7 days',
+      timeFrom: new Date().getTime() - 86400000,
+      timeTo: new Date().getTime() - 604800000,
+      display: true,
+    },
+    {
+      id: 3,
+      displayValue: 'From past month',
+      timeFrom: new Date().getTime() - 604800000,
+      timeTo: new Date().getTime() - 2629800000,
+      display: true,
+    },
+    {
+      id: 3,
+      displayValue: 'From past 3 months',
+      timeFrom: new Date().getTime() - 2629800000,
+      timeTo: new Date().getTime() - 7889400000,
+      display: true,
+    },
+    {
+      id: 4,
+      displayValue: 'Older than 3 months',
+      timeFrom: new Date().getTime() - 7889400000,
+      timeTo: 0,
+      display: true,
+    },
+  ]
 
-  get panels(): any[] {
-    return [{
-      displayValue: 'hello',
-      timeFrom: 0,
-      timeTo: 1,
-    }];
+  get panels() {
+    return this.panelsInit.filter((p) => p.display === true) || [];
   }
 
   get selectionValue(): string {
@@ -115,40 +120,29 @@ export default class TransactionsListComponent implements OnInit {
     return fullHistory;
   }
 
-  get filteredTransactions(): Transaction[] {
-    if (this.selectionValue === 'inbound') return this.getIncomeHistory();
-    if (this.selectionValue === 'outbound') return this.getOutcomeHistory();
-    if (this.selectionValue === 'all') return this.geTransactionsHistory();
+  history: Transaction[] = [];
 
-    return [];
+  getFilteredTransactions(panel: any): Transaction[] {
+    if (this.selectionValue === 'inbound') this.history = this.getIncomeHistory();
+    if (this.selectionValue === 'outbound') this.history = this.getOutcomeHistory();
+    if (this.selectionValue === 'all') this.history = this.geTransactionsHistory();
+
+    return this.history
+      .filter((t) => this.checkTime(t, panel))
+      .sort((t1, t2) => new Date(t2.timestamp).getTime() - new Date(t1.timestamp).getTime());
   }
 
-  // getFilteredTransactions(panel: any): Transaction[] {
-  //   let history: Transaction[] = [];
-  //   if (this.selectionValue === 'inbound') history = this.getIncomeHistory();
-  //   if (this.selectionValue === 'outbound') history = this.getOutcomeHistory();
-  //   if (this.selectionValue === 'all') history = this.geTransactionsHistory();
+  private checkTime(transaction: Transaction, panel: Panel): boolean {
+    const today = new Date(transaction.timestamp).getTime();
+    const display = today < panel.timeFrom && today > panel.timeTo;
 
-  //   return [];
-  // }
-
-  public objectifyDate(transaction: Transaction): DateObject {
-    return {
-      year: transaction.timestamp.toString().substring(0, 4),
-      month: transaction.timestamp.toString().substring(5, 7),
-      day: transaction.timestamp.toString().substring(8, 10),
-      hour: transaction.timestamp.toString().substring(11, 13),
-      minute: transaction.timestamp.toString().substring(14, 16),
-    };
-  }
-
-  private checkTime(transaction: Transaction, panel: any): boolean {
-    const dateDiff = new Date().getTime() - new Date(transaction.timestamp).getTime();
-    return dateDiff < panel.timeFrom && dateDiff > panel.timeTo;
+    if (this.panels[this.panels.indexOf(panel)] !== undefined) {
+      this.panels[this.panels.indexOf(panel)].display = display;
+    }
+    return display;
   }
 
   supplyModel(t: Transaction): TransactionSupplier {
-    const timestamp: Date = new Date(t.timestamp);
     return (t.receiverNumber === this.selectedAccount!.number)
       ? {
         color: 'green',
@@ -162,5 +156,19 @@ export default class TransactionsListComponent implements OnInit {
         symbol: '-',
         displayNumber: t.receiverNumber,
       };
+  }
+
+  getDescription(p: Panel, d: Date): string {
+    switch (p.id) {
+      // 00:00
+      case 1: return `${this.dateService.objectifyDate(d).hour}:${this.dateService.objectifyDate(d).minute}`;
+      // Monday, 00:00
+      case 2: return `${this.dateService.getDayOfTheWeek(d)}, ${this.dateService.objectifyDate(d).hour}:${this.dateService.objectifyDate(d).minute}`;
+      // 1st of Janury, 00:00
+      case 3: return `${this.dateService.objectifyDate(d).day}${this.dateService.getDescriptor(d)} of ${this.dateService.getMonth(d)}, ${this.dateService.objectifyDate(d).hour}:${this.dateService.objectifyDate(d).minute}`;
+      // 01.01.1970, 00:00
+      case 4: return `${this.dateService.objectifyDate(d).day}.${this.dateService.objectifyDate(d).month}.${this.dateService.objectifyDate(d).year} ${this.dateService.objectifyDate(d).hour}:${this.dateService.objectifyDate(d).minute}`;
+      default: return 'Invalid input';
+    }
   }
 }
