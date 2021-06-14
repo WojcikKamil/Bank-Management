@@ -5,8 +5,12 @@
 
     <div class="body-lists home-global">
         <mat-drawer-container autosize class="body-lists home-global ">
-            <mat-drawer #drawer1 mode='side' opened='true' class="drawer">
+            <mat-drawer mode='side' opened='true' class="drawer">
                 <users-list></users-list>
+            </mat-drawer>
+
+            <mat-drawer mode="side" opened="true" position="end" class="drawer">
+                <transactionts-list></transactionts-list>
             </mat-drawer>
             
             <div >

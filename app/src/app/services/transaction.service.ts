@@ -16,6 +16,30 @@ export default class TransactionService extends ApiService {
     super(http);
   }
 
+  private unfilteredTransactionsList: Transaction[] = [];
+
+  public getIncomingTransactionsList(accountNumber: string): Transaction[] {
+    return this.unfilteredTransactionsList.filter((t) => t.receiverNumber === accountNumber);
+  }
+
+  public getOutcomingTransactionsList(accountNumber: string): Transaction[] {
+    return this.unfilteredTransactionsList.filter((t) => t.senderNumber === accountNumber);
+  }
+
+  public async initTransactionsList(accountId: number): Promise<Transaction[]> {
+    return new Promise((resolve, reject) => {
+      this.$getAccountTransactions(accountId).subscribe(
+        (response) => {
+          this.unfilteredTransactionsList = response;
+          resolve(response);
+        },
+        (error) => {
+          reject(new Error(error.error));
+        },
+      );
+    });
+  }
+
   private $getAccountTransactions(accountId: number): Observable<Transaction[]> {
     return this.get<Transaction[]>(`/transactions/${accountId}`);
   }
