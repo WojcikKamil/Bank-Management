@@ -3,6 +3,8 @@ import User from 'src/app/models/user';
 import Account from 'src/app/models/account';
 import AccountService from 'src/app/services/account.service';
 import UserService from 'src/app/services/user.service';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import TransactionBottomSheet from '../../bottom-sheets/transaction.bottom-sheet';
 
 @Component({
   selector: 'accounts-list',
@@ -13,6 +15,7 @@ export default class AccountsListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private accountService: AccountService,
+    private bottomSheet: MatBottomSheet,
   ) {}
 
   async ngOnInit() {
@@ -25,5 +28,10 @@ export default class AccountsListComponent implements OnInit {
 
   get currentUser(): User {
     return this.userService.getCurrentUser()!;
+  }
+
+  selectAccount(account: Account) {
+    this.accountService.selectAccount(account);
+    this.bottomSheet.open(TransactionBottomSheet);
   }
 }

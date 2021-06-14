@@ -50,6 +50,10 @@ export default class AccountService extends ApiService {
     });
   }
 
+  selectAccount(account: Account) {
+    this.selectedAccount = account;
+  }
+
   async updateUserAccounts() {
     this.filteredAccountsList = [];
 
