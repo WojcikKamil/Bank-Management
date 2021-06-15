@@ -14,4 +14,8 @@ export default class RtValidators {
   static onlyHasNumbers(str: string) {
     return (/^[0-9]*$/.test(str));
   }
+
+  static money(str: string) {
+    return (/^[0-9]+(\.[0-9]{2})?$/.test(str));
+  }
 }
