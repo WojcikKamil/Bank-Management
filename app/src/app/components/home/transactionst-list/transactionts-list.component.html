@@ -14,29 +14,31 @@
         </mat-button-toggle-group>
         
         <mat-accordion [multi]='true'>
-            <mat-expansion-panel [expanded]="true" *ngFor="let panel of panels">
-                <mat-expansion-panel-header>{{panel.displayValue}}</mat-expansion-panel-header>
-                <mat-accordion>
-                    <mat-expansion-panel *ngFor="let t of getFilteredTransactions(panel)">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title [ngStyle]="{'color': supplyModel(t).color}">{{supplyModel(t).symbol}} ${{t.value}}</mat-panel-title>
-                            <mat-panel-description>{{getDescription(panel, t.timestamp)}}</mat-panel-description>
-                        </mat-expansion-panel-header>
-                        <a class="header-text">{{supplyModel(t).userType}}</a>: {{supplyModel(t).displayNumber}}
-                        <mat-divider></mat-divider>
-                        <div class="text-container">
-                            <a class="header-text">Title:</a> 
-                            {{t.title}}
-                        </div>
-                        <mat-divider></mat-divider>
-
-                        <div class="date-container">
-                            {{t.timestamp}}
-                        </div>
-                    </mat-expansion-panel>
-                </mat-accordion>
-
-            </mat-expansion-panel>
+            <div *ngFor="let panel of panels" [hidden]="isPanelHidden(panel)">
+                <mat-expansion-panel [expanded]="true">
+                    <mat-expansion-panel-header>{{panel.displayValue}}</mat-expansion-panel-header>
+                    <mat-accordion>
+                        <mat-expansion-panel *ngFor="let t of panel.transactions">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title [ngStyle]="{'color': supplyModel(t).color}">{{supplyModel(t).symbol}} ${{t.value}}</mat-panel-title>
+                                <mat-panel-description>{{getDescription(panel, t.timestamp)}}</mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <a class="header-text">{{supplyModel(t).userType}}</a>: {{supplyModel(t).displayNumber}}
+                            <mat-divider></mat-divider>
+                            <div class="text-container">
+                                <a class="header-text">Title:</a> 
+                                {{t.title}}
+                            </div>
+                            <mat-divider></mat-divider>
+                            
+                            <div class="date-container">
+                                {{t.timestamp}}
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                    
+                </mat-expansion-panel>
+            </div>
         </mat-accordion>
 
     </form>
