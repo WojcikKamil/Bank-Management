@@ -15,6 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogic", "..\Busines
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "..\DataLayer\DataLayer.csproj", "{EA9D9B45-C399-4E9E-A975-43A56D1DFDB1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D516B391-6FFC-4927-8167-46AE8E13FF39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Tests", "..\Api.Tests\Api.Tests.csproj", "{63FB34DC-ED4E-4B79-8302-8C0782C53A22}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBBCC3D2-A3E5-4ED7-8733-82691D65E6F9} = {DBBCC3D2-A3E5-4ED7-8733-82691D65E6F9}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +40,16 @@ Global
 		{EA9D9B45-C399-4E9E-A975-43A56D1DFDB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA9D9B45-C399-4E9E-A975-43A56D1DFDB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA9D9B45-C399-4E9E-A975-43A56D1DFDB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63FB34DC-ED4E-4B79-8302-8C0782C53A22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63FB34DC-ED4E-4B79-8302-8C0782C53A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63FB34DC-ED4E-4B79-8302-8C0782C53A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63FB34DC-ED4E-4B79-8302-8C0782C53A22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{63FB34DC-ED4E-4B79-8302-8C0782C53A22} = {D516B391-6FFC-4927-8167-46AE8E13FF39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5730BE65-9C0A-4484-B9A9-7584B88150D0}
