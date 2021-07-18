@@ -18,6 +18,31 @@ export default class TransactionService extends ApiService {
 
   private unfilteredTransactionsList: Transaction[] = [];
 
+  private lastTransactionAmount?: number;
+
+  private lastTransactionTitle?: string;
+
+  getLastTransactionTitle(): string|undefined {
+    return this.lastTransactionTitle;
+  }
+
+  getLastTransactionAmount(): number|undefined {
+    return this.lastTransactionAmount;
+  }
+
+  setLastTransactionTitle(value: string) {
+    this.lastTransactionTitle = value;
+  }
+
+  setLastTransactionAmount(value: number) {
+    this.lastTransactionAmount = value;
+  }
+
+  clearLastTransactionValues() {
+    this.lastTransactionAmount = undefined;
+    this.lastTransactionAmount = undefined;
+  }
+
   public getIncomingTransactionsList(accountNumber: string): Transaction[] {
     return this.unfilteredTransactionsList.filter((t) => t.receiverNumber === accountNumber);
   }
@@ -40,15 +65,43 @@ export default class TransactionService extends ApiService {
     });
   }
 
+  async updateTransactions(selectedAccountId: number) {
+    this.unfilteredTransactionsList = [];
+
+    await this.$getAccountTransactions(selectedAccountId).subscribe((response) => {
+      this.unfilteredTransactionsList = response;
+    });
+  }
+
+  public async transferFunds(request: TransferRequest): Promise<Transaction> {
+    return new Promise((resolve, reject) => {
+      this.$transferFunds(request).subscribe((response) => {
+        resolve(response);
+      }, (err) => {
+        reject(new Error(err.error));
+      });
+    });
+  }
+
+  public async grant(request: GrantRequest): Promise<Transaction> {
+    return new Promise((resolve, reject) => {
+      this.$grantFunds(request).subscribe((response) => {
+        resolve(response);
+      }, (err) => {
+        reject(new Error(err.error));
+      });
+    });
+  }
+
   private $getAccountTransactions(accountId: number): Observable<Transaction[]> {
     return this.get<Transaction[]>(`/transactions/${accountId}`);
   }
 
   private $transferFunds(request: TransferRequest): Observable<Transaction> {
-    return this.patch<Transaction>('/transactions', request);
+    return this.patch<Transaction>('/transactions/transfer', request);
   }
 
   private $grantFunds(request: GrantRequest): Observable<Transaction> {
-    return this.patch<Transaction>('/transactions', request);
+    return this.patch<Transaction>('/transactions/grant', request);
   }
 }

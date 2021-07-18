@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import MaterialModule from '../materials.module';
+import TransactionBottomSheet from './bottom-sheets/transaction.bottom-sheet';
 import MessageDialog from './dialogs/message.dialog';
 import PersonalSettingsDialog from './dialogs/settings/personal/personal-settings.dialog';
 import SettingsDialog from './dialogs/settings/settings.dialog';
@@ -29,6 +30,7 @@ import MessageSnackbar from './snackbars/message.snackbar';
     AccountsListComponent,
     UsersListComponent,
     TransactionsListComponent,
+    TransactionBottomSheet,
   ],
   imports: [
     BrowserModule,

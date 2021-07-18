@@ -18,9 +18,9 @@ export interface TransactionSupplier {
 export interface Panel {
   id: number,
   displayValue: string,
-  timeFrom: number,
-  timeTo: number,
-  display: boolean,
+  transactions: Transaction[],
+  timeEarlier: number,
+  timeLater: number,
 }
 
 @Component({
@@ -43,55 +43,61 @@ export default class TransactionsListComponent implements OnInit {
     this.transactionsForm = this.formBuilder.group({
       matButtonToggleGroup: ['all'],
     });
-
-    await this.accountService.initUserAccounts(this.currentUser.id);
-    await this.transactionService.initTransactionsList(this.selectedAccount!.id);
   }
 
-  private panelsInit: Panel[] = [
+  private predefinedPanels: Panel[] = [
     {
       id: 1,
       displayValue: 'From past 24 hours',
-      timeFrom: new Date().getTime(),
-      timeTo: new Date().getTime() - 86400000,
-      display: true,
+      transactions: [],
+      timeLater: new Date().getTime(),
+      timeEarlier: new Date().getTime() - 86400000,
     },
     {
       id: 2,
       displayValue: 'From past 7 days',
-      timeFrom: new Date().getTime() - 86400000,
-      timeTo: new Date().getTime() - 604800000,
-      display: true,
+      transactions: [],
+      timeLater: new Date().getTime() - 86400000,
+      timeEarlier: new Date().getTime() - 604800000,
     },
     {
       id: 3,
       displayValue: 'From past month',
-      timeFrom: new Date().getTime() - 604800000,
-      timeTo: new Date().getTime() - 2629800000,
-      display: true,
+      transactions: [],
+      timeLater: new Date().getTime() - 604800000,
+      timeEarlier: new Date().getTime() - 2629800000,
     },
     {
       id: 3,
       displayValue: 'From past 3 months',
-      timeFrom: new Date().getTime() - 2629800000,
-      timeTo: new Date().getTime() - 7889400000,
-      display: true,
+      transactions: [],
+      timeLater: new Date().getTime() - 2629800000,
+      timeEarlier: new Date().getTime() - 7889400000,
     },
     {
       id: 4,
       displayValue: 'Older than 3 months',
-      timeFrom: new Date().getTime() - 7889400000,
-      timeTo: 0,
-      display: true,
+      transactions: [],
+      timeLater: new Date().getTime() - 7889400000,
+      timeEarlier: 0,
     },
   ]
 
-  get panels() {
-    return this.panelsInit.filter((p) => p.display === true) || [];
+  get panels(): Panel[] {
+    console.log('testest');
+    return this.predefinedPanels.map((p) => {
+      // eslint-disable-next-line no-param-reassign
+      p.transactions = this.getFilteredTransactions(p.timeEarlier, p.timeLater);
+      return p;
+    });
+  }
+
+  isPanelHidden(panel: Panel): boolean {
+    return panel.transactions.length === 0;
   }
 
   get selectionValue(): string {
-    return this.transactionsForm.get('matButtonToggleGroup')!.value;
+    return this.transactionsForm?.get('matButtonToggleGroup')!.value;
   }
 
   get currentUser(): User {
@@ -122,24 +128,18 @@ export default class TransactionsListComponent implements OnInit {
 
   history: Transaction[] = [];
 
-  getFilteredTransactions(panel: any): Transaction[] {
+  getFilteredTransactions(timeEarlier: number, timeLater: number): Transaction[] {
     if (this.selectionValue === 'inbound') this.history = this.getIncomeHistory();
     if (this.selectionValue === 'outbound') this.history = this.getOutcomeHistory();
     if (this.selectionValue === 'all') this.history = this.geTransactionsHistory();
 
     return this.history
-      .filter((t) => this.checkTime(t, panel))
+      .filter((t) => this.checkTime(new Date(t.timestamp).getTime(), timeEarlier, timeLater))
       .sort((t1, t2) => new Date(t2.timestamp).getTime() - new Date(t1.timestamp).getTime());
   }
 
-  private checkTime(transaction: Transaction, panel: Panel): boolean {
-    const today = new Date(transaction.timestamp).getTime();
-    const display = today < panel.timeFrom && today > panel.timeTo;
-
-    if (this.panels[this.panels.indexOf(panel)] !== undefined) {
-      this.panels[this.panels.indexOf(panel)].display = display;
-    }
-    return display;
+  private checkTime(timestamp: number, timeEarlier: number, timeLater: number): boolean {
+    return timestamp < timeLater && timestamp > timeEarlier;
   }
 
   supplyModel(t: Transaction): TransactionSupplier {

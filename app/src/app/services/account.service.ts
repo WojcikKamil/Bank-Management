@@ -21,12 +21,24 @@ export default class AccountService extends ApiService {
 
   private selectedAccount?: Account;
 
+  private isNextSelectionATarget: boolean = false;
+
+  private targetAccount?: Account;
+
   private accountsOwnersIds: number[] = [];
 
   public filteredAccountsList: Account[] = [];
 
   public getSelectedAccount(): Account|undefined {
     return this.selectedAccount;
+  }
+
+  public getTargetAccount(): Account|undefined {
+    return this.targetAccount;
+  }
+
+  public getToggleStatus(): boolean {
+    return this.isNextSelectionATarget;
   }
 
   async initUserAccounts(userId: number): Promise<Account[]> {
@@ -48,6 +60,24 @@ export default class AccountService extends ApiService {
         },
       );
     });
+  }
+
+  selectAccount(account: Account) {
+    if (this.isNextSelectionATarget && this.selectedAccount!.number !== account.number) {
+      this.targetAccount = account;
+    } else {
+      this.selectedAccount = account;
+      this.targetAccount = undefined;
+    }
+    this.isNextSelectionATarget = false;
+  }
+
+  enableAccountSelectionMode() {
+    this.isNextSelectionATarget = true;
+  }
+
+  clearTargetAccount() {
+    this.targetAccount = undefined;
   }
 
   async updateUserAccounts() {

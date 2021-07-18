@@ -1,7 +1,7 @@
 <div class="accounts-list-global">
     <div class="accounts-list">
         <div *ngFor="let account of filteredAccountsList; index as i" >
-            <mat-card class="account-element colors-active" matRipple> 
+            <mat-card class="account-element colors-active" matRipple (click)='selectAccount(account)'> 
                 <mat-card-header>
                     <div mat-card-avatar>
                         <mat-icon class="icon">local_atm</mat-icon>

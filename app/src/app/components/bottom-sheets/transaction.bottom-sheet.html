@@ -1,0 +1,38 @@
+<mat-nav-list class="transaction-sheet-global"> 
+    <div>
+        <form [formGroup]='transactionForm'>
+
+            <div>
+                <h1>Transaction</h1>
+                <button mat-icon-button class="close-button" (click)='close()'><mat-icon>close</mat-icon></button>
+            </div>
+            
+            <div >
+                <button mat-fab color='primary' class="confirm-button" *ngIf='transactionForm.valid' (click)='confirm()'><mat-icon>check</mat-icon></button>
+            </div>
+
+            <div>
+                <mat-form-field>
+                    <mat-label>Title</mat-label>
+                    <input matInput placeholder="Transaction title" formControlName='title' required>
+                    <mat-error *ngIf="titleControl.invalid">{{getErrorMessage(titleControl)}}</mat-error>
+                </mat-form-field>
+        
+                <mat-form-field class="float-right">
+                    <mat-label>Amount ($)</mat-label>
+                    <input (keypress)="numberOnly($event)" type="text" matInput placeholder="Amount to send" formControlName='amount' required>
+                    <mat-error *ngIf="amountControl.invalid">{{getErrorMessage(amountControl)}}!</mat-error>
+                </mat-form-field>
+            </div>
+    
+            <div class="buttons-container">
+                <button mat-stroked-button [disabled]='true'>{{source}}</button>
+    
+                <button mat-icon-button><mat-icon>arrow_forward</mat-icon></button>
+                
+    
+                <button mat-stroked-button (click)='initializeTargetSelection()'>{{target}}</button>
+            </div>
+        </form>
+    </div>
+</mat-nav-list>

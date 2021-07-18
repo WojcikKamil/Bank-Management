@@ -1,0 +1,23 @@
+.transaction-sheet-global {
+    width: 500px;
+}
+
+.close-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.confirm-button {
+    position: absolute;
+    left: 50%;;
+    transform: translate(-50%, -30px);
+}
+
+.float-right{
+    float: right;
+}
+
+.buttons-container {
+    text-align: center;
+}
