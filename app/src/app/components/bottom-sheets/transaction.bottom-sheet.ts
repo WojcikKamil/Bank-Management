@@ -125,6 +125,7 @@ export default class TransactionBottomSheet implements OnInit, AfterViewInit {
       .then((onfulfilled) => {
         this.accountService.clearTargetAccount();
         this.accountService.updateUserAccounts();
+        this.transactionService.updateTransactions(this.selectedAccount!.id);
         this.bottomSheet.dismiss();
         this.snackBar.open('Transaction successful!', '', {
           duration: 5000,

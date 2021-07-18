@@ -65,6 +65,14 @@ export default class TransactionService extends ApiService {
     });
   }
 
+  async updateTransactions(selectedAccountId: number) {
+    this.unfilteredTransactionsList = [];
+
+    await this.$getAccountTransactions(selectedAccountId).subscribe((response) => {
+      this.unfilteredTransactionsList = response;
+    });
+  }
+
   public async transferFunds(request: TransferRequest): Promise<Transaction> {
     return new Promise((resolve, reject) => {
       this.$transferFunds(request).subscribe((response) => {
